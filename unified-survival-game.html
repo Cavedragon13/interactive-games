@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival Decision Series - Training Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* =================================================================
+           DYNAMIC CSS VARIABLES - Updated by JavaScript per scenario
+           ================================================================= */
+        :root {
+            /* DEFAULT THEME - Updated dynamically */
+            --primary-dark: #1a1a1a;
+            --primary-medium: #2a2a2a;
+            --primary-light: #4a4a4a;
+            --accent-primary: #007bff;
+            --accent-secondary: #0056b3;
+            --accent-tertiary: #ffd700;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-light: #e6e6e6;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
+        }
+        
+        /* =================================================================
+           BASE LAYOUT AND TYPOGRAPHY
+           ================================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            transition: background 0.5s ease;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid var(--accent-primary);
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        
+        /* =================================================================
+           GAME SELECTOR
+           ================================================================= */
+        .game-selector {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+        
+        .selector-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .scenario-select {
+            background: var(--primary-medium);
+            border: 2px solid var(--accent-primary);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 300px;
+        }
+        
+        .scenario-select:hover {
+            background: var(--primary-light);
+            border-color: var(--accent-secondary);
+        }
+        
+        .scenario-select option {
+            background: var(--primary-dark);
+            padding: 10px;
+        }
+        
+        /* =================================================================
+           HEADER SECTION
+           ================================================================= */
+        .header {
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-dark) 100%);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-primary);
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .header.show {
+            opacity: 1;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
+        }
+        
+        .authority-logo {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: var(--text-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .title {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           MAIN GAME CONTENT AREA
+           ================================================================= */
+        .game-content {
+            padding: 30px;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .game-content.show {
+            display: block;
+            opacity: 1;
+        }
+        
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(27, 41, 81, 0.8) 0%, rgba(4, 30, 66, 0.6) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .scenario-box::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .scenario-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 18px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .scenario-text {
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        
+        .instructions {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 20px 0;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .instructions::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: var(--primary-dark);
+            color: var(--accent-primary);
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .drag-instructions {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .drag-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        
+        .progress-indicator {
+            text-align: center;
+            font-size: 15px;
+            margin: 20px 0;
+            color: var(--primary-light);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           ITEM RANKING INTERFACE
+           ================================================================= */
+        .ranking-area {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 20px 0;
+            min-height: 400px;
+        }
+        
+        .item-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 2px solid var(--text-secondary);
+            border-radius: 10px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: grab;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .item-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+        }
+        
+        .item-card.dragging {
+            opacity: 0.7;
+            transform: rotate(3deg);
+            cursor: grabbing;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-primary);
+        }
+        
+        .item-card.drag-over {
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+        }
+        
+        .rank-number {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        
+        .item-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 0;
+        }
+        
+        .drag-handle {
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: grab;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+        
+        .drag-handle:hover {
+            color: var(--primary-light);
+            background: rgba(255, 255, 255, 0.05);
+            opacity: 1;
+        }
+        
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* =================================================================
+           CONTROL BUTTONS
+           ================================================================= */
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            color: var(--text-primary);
+            padding: 15px 30px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, var(--accent-secondary), var(--accent-primary));
+        }
+        
+        .btn:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* =================================================================
+           RESULTS SECTION
+           ================================================================= */
+        .results {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .score {
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .expert-explanation {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-left: 4px solid var(--primary-light);
+            padding: 18px;
+            margin: 15px 0;
+            font-size: 13px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* =================================================================
+           BRANDING SECTION
+           ================================================================= */
+        .seed13-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 15px;
+            opacity: 0.7;
+        }
+        
+        .seed13-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--text-secondary) 0%, var(--primary-light) 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--primary-dark);
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid var(--primary-light);
+            flex-shrink: 0;
+        }
+        
+        .seed13-text {
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           WELCOME SCREEN
+           ================================================================= */
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--text-secondary);
+        }
+        
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .welcome-subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .welcome-instruction {
+            font-size: 16px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-top: 30px;
+        }
+        
+        /* =================================================================
+           RESPONSIVE DESIGN
+           ================================================================= */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 24px;
+            }
+            
+            .game-content {
+                padding: 15px;
+            }
+            
+            .item-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .rank-number {
+                margin-bottom: 10px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+            
+            .scenario-select {
+                min-width: 200px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Game Selector -->
+        <div class="game-selector">
+            <div class="selector-title">Select Your Survival Training Scenario</div>
+            <select class="scenario-select" id="scenarioSelect" onchange="loadScenario(this.value)">
+                <option value="">-- Choose a Scenario --</option>
+                <option value="moon">🌙 Lunar Survival Mission (NASA)</option>
+                <option value="shipwreck">🌊 Shipwreck Survival (Coast Guard)</option>
+                <option value="mountain">🏔️ Mountain Crash Survival (Forest Service)</option>
+                <option value="arctic">🧊 Arctic Research Emergency (Polar Station)</option>
+                <option value="jungle">🌴 Jungle Crash Survival (Military)</option>
+                <option value="mine">⛏️ Mine Collapse Emergency (Mine Safety)</option>
+                <option value="deepsea">🌊 Deep Sea Emergency (Commercial Diving)</option>
+                <option value="asteroid">🚀 Asteroid Mining Crisis (Space Corp)</option>
+            </select>
+        </div>
+        
+        <!-- Header (Hidden until scenario selected) -->
+        <div class="header" id="gameHeader">
+            <div class="authority-logo" id="authorityLogo"></div>
+            <div class="title" id="gameTitle"></div>
+            <div class="subtitle" id="gameSubtitle"></div>
+        </div>
+        
+        <!-- Welcome Screen (Shown before scenario selection) -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-title">Survival Decision Series</div>
+            <div class="welcome-subtitle">
+                Test your survival instincts against expert protocols from NASA, Coast Guard, 
+                Forest Service, and other professional rescue organizations.
+            </div>
+            <div class="welcome-instruction">👆 Select a scenario above to begin your training</div>
+        </div>
+        
+        <!-- Game Content (Hidden until scenario selected) -->
+        <div class="game-content" id="gameContent">
+            <div class="scenario-box" id="scenarioBox" data-label="">
+                <div class="scenario-title" id="scenarioTitle"></div>
+                <div class="scenario-text" id="scenarioText"></div>
+            </div>
+            
+            <div class="instructions" id="instructions" data-label="">
+                <strong id="instructionsTitle"></strong><br>
+                <span id="instructionsText"></span>
+            </div>
+            
+            <div class="drag-instructions">
+                <span class="drag-icon" id="dragIcon"></span>
+                <strong>DRAG &amp; DROP:</strong> <span id="dragInstructionsText"></span>
+            </div>
+            
+            <div class="progress-indicator" id="progressText"></div>
+            
+            <div class="ranking-area" id="rankingArea"></div>
+            
+            <div class="controls">
+                <button class="btn" onclick="checkRankings()" id="checkBtn"></button>
+                <button class="btn" onclick="resetGame()" id="resetBtn"></button>
+            </div>
+            
+            <div class="seed13-branding">
+                <div class="seed13-logo">Seed 13<br><small>Logo</small></div>
+                <div class="seed13-text">Survival Decision Series • Training Interface</div>
+            </div>
+            
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // ================================================================
+        // SCENARIO DATABASE
+        // All survival scenarios stored in one place
+        // ================================================================
+        const SCENARIOS = {
+            moon: {
+                theme: {
+                    primaryDark: '#041E42',
+                    primaryMedium: '#1B2951',
+                    primaryLight: '#5A9FD4',
+                    accentPrimary: '#FC3D21',
+                    accentSecondary: '#FF6B35',
+                    accentTertiary: '#FFD700'
+                },
+                content: {
+                    gameTitle: 'LUNAR SURVIVAL MISSION',
+                    authorityName: 'NASA',
+                    gameSubtitle: 'Astronaut Training Exercise • Mission Control Interface',
+                    scenarioLabel: 'EMERGENCY SITUATION',
+                    emergencyTitle: '⚠️ HOUSTON, WE HAVE A PROBLEM! ⚠️',
+                    emergencyScenario: `Your spacecraft has crash-landed on the lunar surface approximately 120 miles from the nearest lunar base. The impact has destroyed your mother ship and damaged most of your equipment. 
+
+                    You and your crew are uninjured, but your survival depends on reaching the lunar base on foot. You must traverse the moon's harsh terrain with limited supplies. The lunar day will last approximately 14 Earth days, followed by 14 days of darkness. Surface temperatures range from 260°F (127°C) in sunlight to -280°F (-173°C) in shadow.
+
+                    Your space suits are intact with 72 hours of oxygen remaining. Below are 10 items that survived the crash intact. Your crew's survival depends on choosing the most critical items to carry on your 120-mile journey to safety. Remember, every pound matters in the moon's low gravity, and you can only carry so much.`,
+                    instructionsLabel: 'SURVIVAL PROTOCOL',
+                    instructionsTitle: 'MISSION PARAMETERS',
+                    instructionsText: 'Rank these items from 1 (most important) to 10 (least important) for your survival journey. Consider oxygen supply, navigation, communication, and protection from lunar conditions.',
+                    dragIcon: '🌙',
+                    dragInstructionsText: 'Arrange items by importance. Your decisions will determine mission success!',
+                    progressText: 'Arranging survival priorities... Lives depend on your choices.',
+                    assessmentButton: 'NASA Assessment',
+                    resetButton: 'Reset Mission'
+                },
+                config: {
+                    expertSource: 'NASA Scientists',
+                    expertTitle: 'NASA Lunar Survival Protocol',
+                    expertReadyMessage: 'NASA Astronaut Material!',
+                    scoringThresholds: { excellent: 15, good: 25, fair: 35 },
+                    expertPriorities: [
+                        'Oxygen is absolutely critical - without it, nothing else matters',
+                        'Navigation and orientation are essential to avoid getting lost',
+                        'Communication could mean immediate rescue if functional',
+                        'Protection from temperature extremes is vital on the lunar surface',
+                        'Some items that seem useful on Earth are worthless on the Moon'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'oxygen',
+                        name: 'Two 100-pound tanks of oxygen',
+                        description: 'Pressurized oxygen for breathing',
+                        expertRank: 1,
+                        explanation: 'Most pressing survival need. Without oxygen, survival time is minutes.'
+                    },
+                    {
+                        id: 'water',
+                        name: '5 gallons of water',
+                        description: 'Dehydrated water in special container',
+                        expertRank: 2,
+                        explanation: 'Prevents dehydration. Essential for 120-mile journey in space suit.'
+                    },
+                    {
+                        id: 'map',
+                        name: 'Stellar map of lunar constellations',
+                        description: 'Map showing star positions from Moon',
+                        expertRank: 3,
+                        explanation: 'Primary navigation method. Essential to find lunar base direction.'
+                    },
+                    {
+                        id: 'food',
+                        name: 'Food concentrate',
+                        description: 'High-energy food tablets',
+                        expertRank: 4,
+                        explanation: 'Provides energy for long journey, though less critical than water.'
+                    },
+                    {
+                        id: 'radio',
+                        name: 'FM receiver-transmitter',
+                        description: 'Solar-powered communication device',
+                        expertRank: 5,
+                        explanation: 'Possible communication with base, but requires line-of-sight on Moon.'
+                    },
+                    {
+                        id: 'rope',
+                        name: '50 feet of nylon rope',
+                        description: 'Strong multipurpose rope',
+                        expertRank: 6,
+                        explanation: 'Useful for climbing crater walls or tethering crew together.'
+                    },
+                    {
+                        id: 'firstaid',
+                        name: 'First-aid kit with injector',
+                        description: 'Medical supplies and morphine injector',
+                        expertRank: 7,
+                        explanation: 'Important for injuries, but special injector works through space suit.'
+                    },
+                    {
+                        id: 'parachute',
+                        name: 'Parachute silk',
+                        description: 'Large piece of parachute fabric',
+                        expertRank: 8,
+                        explanation: 'Can provide sun protection or carry items, but limited use on Moon.'
+                    },
+                    {
+                        id: 'raft',
+                        name: 'Life raft with CO2 bottles',
+                        description: 'Self-inflating life raft',
+                        expertRank: 9,
+                        explanation: 'CO2 bottles could provide minor propulsion, but raft itself is useless.'
+                    },
+                    {
+                        id: 'flares',
+                        name: 'Signal flares',
+                        description: 'Three signal flares',
+                        expertRank: 10,
+                        explanation: 'Useless on Moon - no oxygen for combustion, no atmosphere to see smoke.'
+                    }
+                ]
+            },
+            
+            shipwreck: {
+                theme: {
+                    primaryDark: '#001f3f',
+                    primaryMedium: '#003366',
+                    primaryLight: '#0074D9',
+                    accentPrimary: '#FF851B',
+                    accentSecondary: '#FF6B35',
+                    accentTertiary: '#FFD700'
+                },
+                content: {
+                    gameTitle: 'SHIPWRECK SURVIVAL MISSION',
+                    authorityName: 'COAST GUARD',
+                    gameSubtitle: 'Maritime Emergency Training • Coast Guard Protocol',
+                    scenarioLabel: 'MARITIME EMERGENCY',
+                    emergencyTitle: '⚠️ MAYDAY! MAYDAY! MAYDAY! ⚠️',
+                    emergencyScenario: `Your yacht has struck a reef and sunk in the South Pacific, approximately 1,000 miles southwest of the nearest land. You and your four crew members have managed to inflate a large life raft and are all uninjured.
+
+                    The weather is calm with 3-foot swells, but storm season is approaching. Water temperature is 78°F (25°C). You're far from shipping lanes, and your last radio contact was 6 hours ago. Your emergency beacon sank with the yacht.
+
+                    You managed to salvage 10 items before the yacht disappeared beneath the waves. Your survival depends on making the right choices about what to keep in your limited raft space. Search and rescue operations typically take 7-14 days in this remote area.`,
+                    instructionsLabel: 'SURVIVAL PROTOCOL',
+                    instructionsTitle: 'MARITIME SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 by importance. Consider hydration, signaling for rescue, protection from elements, and sustaining life until rescue.',
+                    dragIcon: '🌊',
+                    dragInstructionsText: 'Prioritize items for open ocean survival. Every choice matters!',
+                    progressText: 'Setting survival priorities... Your decisions could save lives.',
+                    assessmentButton: 'Coast Guard Assessment',
+                    resetButton: 'Reset Scenario'
+                },
+                config: {
+                    expertSource: 'Coast Guard Experts',
+                    expertTitle: 'Maritime Rescue Protocol',
+                    expertReadyMessage: 'Coast Guard Ready!',
+                    scoringThresholds: { excellent: 15, good: 25, fair: 35 },
+                    expertPriorities: [
+                        'Signaling devices are top priority - being found is everything',
+                        'Water is critical - dehydration kills in 3-5 days',
+                        'Protection from sun and exposure prevents rapid deterioration',
+                        'Food is less critical - humans can survive weeks without it',
+                        'Stay with the raft - swimming or leaving drastically reduces survival odds'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'mirror',
+                        name: 'Shaving mirror',
+                        description: 'Small mirror in floating case',
+                        expertRank: 1,
+                        explanation: 'Best signaling device. Visible up to 20 miles on clear day to aircraft.'
+                    },
+                    {
+                        id: 'water',
+                        name: '2-gallon can of water',
+                        description: 'Fresh drinking water in sealed container',
+                        expertRank: 2,
+                        explanation: 'Prevents dehydration. Most critical after signaling. 3 days without water is fatal.'
+                    },
+                    {
+                        id: 'rations',
+                        name: 'Emergency food rations',
+                        description: 'High-calorie survival bars (3,000 calories)',
+                        expertRank: 3,
+                        explanation: 'Provides energy, but humans can survive weeks without food if hydrated.'
+                    },
+                    {
+                        id: 'tarp',
+                        name: 'Plastic tarp (20 sq ft)',
+                        description: 'Large waterproof plastic sheet',
+                        expertRank: 4,
+                        explanation: 'Catches rainwater and provides sun protection. Versatile survival tool.'
+                    },
+                    {
+                        id: 'oil',
+                        name: '1 quart of 20-weight oil',
+                        description: 'Motor oil in sealed container',
+                        expertRank: 5,
+                        explanation: 'Can calm waves around raft and create visible slick for aircraft spotting.'
+                    },
+                    {
+                        id: 'rope',
+                        name: '15 feet of nylon rope',
+                        description: 'Strong floating rope',
+                        expertRank: 6,
+                        explanation: 'Secures equipment and people. Could aid in rescue or raft repair.'
+                    },
+                    {
+                        id: 'chocolate',
+                        name: '2 boxes of chocolate bars',
+                        description: 'High-energy chocolate bars',
+                        expertRank: 7,
+                        explanation: 'Quick energy but melts in heat. Less efficient than survival rations.'
+                    },
+                    {
+                        id: 'fishing',
+                        name: 'Fishing kit with line and hooks',
+                        description: 'Basic fishing equipment',
+                        expertRank: 8,
+                        explanation: 'Potential food source but unreliable. Requires time and energy to use.'
+                    },
+                    {
+                        id: 'floats',
+                        name: 'Seat cushion flotation devices',
+                        description: 'Three floating seat cushions',
+                        expertRank: 9,
+                        explanation: 'Already in raft, so redundant. Could mark position if thrown overboard.'
+                    },
+                    {
+                        id: 'repellent',
+                        name: 'Shark repellent',
+                        description: 'Chemical shark deterrent',
+                        expertRank: 10,
+                        explanation: 'Largely ineffective. Staying in raft is best protection from sharks.'
+                    }
+                ]
+            },
+            
+            mountain: {
+                theme: {
+                    primaryDark: '#1a3a1a',
+                    primaryMedium: '#2d5a2d',
+                    primaryLight: '#4a8a4a',
+                    accentPrimary: '#FF6B35',
+                    accentSecondary: '#FFA500',
+                    accentTertiary: '#FFD700'
+                },
+                content: {
+                    gameTitle: 'HIGH ALTITUDE CRASH SURVIVAL',
+                    authorityName: 'US FOREST SERVICE',
+                    gameSubtitle: 'Mountain Rescue Training • Wilderness Emergency Protocol',
+                    scenarioLabel: 'WILDERNESS EMERGENCY',
+                    emergencyTitle: '⚠️ AIRCRAFT DOWN! ⚠️',
+                    emergencyScenario: `Your small aircraft has crash-landed in the Rocky Mountains at 11,000 feet elevation during late October. The pilot is dead, and the aircraft is too damaged to repair. You and three other passengers have only minor injuries.
+
+                    The crash site is in a narrow valley surrounded by peaks. The nearest town is 50 miles away, but you don't know in which direction. Night temperatures drop to -20°F (-29°C), and a storm system is approaching. Snow depth is already 2 feet with more expected.
+
+                    You're dressed in business clothing suitable for city weather, not mountain survival. The plane's radio is destroyed, but the emergency beacon may be working. Search and rescue could take 2-7 days in these conditions. You've salvaged 10 items from the wreckage.`,
+                    instructionsLabel: 'SURVIVAL PROTOCOL',
+                    instructionsTitle: 'MOUNTAIN SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 for survival importance. Consider shelter, warmth, signaling, and the decision to stay or attempt hiking out.',
+                    dragIcon: '🏔️',
+                    dragInstructionsText: 'Prioritize for extreme cold mountain survival. Choose wisely!',
+                    progressText: 'Evaluating survival priorities... Mountain conditions are unforgiving.',
+                    assessmentButton: 'Forest Service Assessment',
+                    resetButton: 'Reset Emergency'
+                },
+                config: {
+                    expertSource: 'Forest Service Search & Rescue',
+                    expertTitle: 'Mountain Rescue Protocol',
+                    expertReadyMessage: 'Mountain Rescue Ready!',
+                    scoringThresholds: { excellent: 18, good: 28, fair: 38 },
+                    expertPriorities: [
+                        'Fire is life at high altitude - warmth prevents hypothermia within hours',
+                        'Shelter from wind and snow is critical for surviving nights',
+                        'Stay at crash site - searching expands search area exponentially',
+                        'Signaling devices multiply rescue chances in vast wilderness',
+                        'Calories and hydration maintain body heat and decision-making ability'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'matches',
+                        name: 'Waterproof matches (4 boxes)',
+                        description: 'Strike-anywhere matches in waterproof containers',
+                        expertRank: 1,
+                        explanation: 'Fire means survival. Provides warmth, signaling, water purification, and morale.'
+                    },
+                    {
+                        id: 'tarp',
+                        name: 'Canvas tarp (20x20 feet)',
+                        description: 'Heavy-duty waterproof canvas',
+                        expertRank: 2,
+                        explanation: 'Essential shelter from snow and wind. Can save lives first night.'
+                    },
+                    {
+                        id: 'map',
+                        name: 'Sectional air map of area',
+                        description: 'Aviation map showing terrain',
+                        expertRank: 3,
+                        explanation: 'Shows location relative to towns and helps rescuers if you stay put.'
+                    },
+                    {
+                        id: 'flashlight',
+                        name: 'Flashlight with 4 batteries',
+                        description: 'Heavy-duty flashlight',
+                        expertRank: 4,
+                        explanation: 'Vital for signaling aircraft at night and emergency tasks.'
+                    },
+                    {
+                        id: 'whiskey',
+                        name: 'Fifth of whiskey',
+                        description: '86-proof whiskey in glass bottle',
+                        expertRank: 5,
+                        explanation: 'Fire starter, antiseptic, and trade value. Drinking it reduces survival.'
+                    },
+                    {
+                        id: 'compass',
+                        name: 'Magnetic compass',
+                        description: 'Quality orienteering compass',
+                        expertRank: 6,
+                        explanation: 'Useful with map but staying put is safer than wandering in mountains.'
+                    },
+                    {
+                        id: 'chocolate',
+                        name: '20 candy bars',
+                        description: 'High-calorie chocolate bars',
+                        expertRank: 7,
+                        explanation: 'Quick energy maintains body heat, but less efficient than other foods.'
+                    },
+                    {
+                        id: 'newspaper',
+                        name: 'Newspapers (one per person)',
+                        description: 'Recent newspapers',
+                        expertRank: 8,
+                        explanation: 'Excellent fire starter and insulation inside clothing.'
+                    },
+                    {
+                        id: 'knife',
+                        name: 'Loaded hunting knife',
+                        description: 'Fixed-blade knife with sheath',
+                        expertRank: 9,
+                        explanation: 'Useful tool but less critical than warmth and shelter items.'
+                    },
+                    {
+                        id: 'pistol',
+                        name: '.45 caliber pistol (loaded)',
+                        description: 'Handgun with 8 rounds',
+                        expertRank: 10,
+                        explanation: 'Poor signaling device, dangerous if misused. Wildlife avoids crash sites.'
+                    }
+                ]
+            },
+            
+            arctic: {
+                theme: {
+                    primaryDark: '#0a1929',
+                    primaryMedium: '#173a5e',
+                    primaryLight: '#46a6ff',
+                    accentPrimary: '#00e5ff',
+                    accentSecondary: '#18ffff',
+                    accentTertiary: '#ffd700'
+                },
+                content: {
+                    gameTitle: 'ARCTIC SURVIVAL MISSION',
+                    authorityName: 'POLAR RESEARCH',
+                    gameSubtitle: 'Cold Weather Training • Arctic Emergency Protocol',
+                    scenarioLabel: 'ARCTIC EMERGENCY',
+                    emergencyTitle: '⚠️ ARCTIC STATION EMERGENCY! ⚠️',
+                    emergencyScenario: `Your research station in Northern Alaska has been destroyed by a severe ice storm. You and your team of five are stranded 80 miles from the nearest outpost. It's January, with 24-hour darkness and temperatures reaching -60°F (-51°C).
+
+                    The storm has knocked out all communications, and your vehicles are buried under ice. Winds are gusting to 50 mph, creating deadly wind chills approaching -100°F. You have basic arctic clothing, but the station's main supplies were destroyed.
+
+                    The weather window for rescue flights is extremely limited. Your team must survive until conditions improve, which could be 5-10 days. You've managed to salvage 10 items from the wreckage before everything froze solid.`,
+                    instructionsLabel: 'ARCTIC PROTOCOL',
+                    instructionsTitle: 'EXTREME COLD SURVIVAL',
+                    instructionsText: 'Rank items 1-10 for arctic survival. Consider protection from cold, maintaining core temperature, and avoiding frostbite.',
+                    dragIcon: '❄️',
+                    dragInstructionsText: 'Order items for extreme arctic survival. Every second counts!',
+                    progressText: 'Calculating survival priorities... Arctic conditions kill in minutes.',
+                    assessmentButton: 'Arctic Team Assessment',
+                    resetButton: 'Reset Protocol'
+                },
+                config: {
+                    expertSource: 'Arctic Research Experts',
+                    expertTitle: 'Arctic Survival Protocol',
+                    expertReadyMessage: 'Arctic Explorer Ready!',
+                    scoringThresholds: { excellent: 18, good: 28, fair: 38 },
+                    expertPriorities: [
+                        'Shelter from wind is absolutely critical - wind chill kills in minutes',
+                        'Maintaining core body temperature requires multiple heat sources',
+                        'Signaling in 24-hour darkness requires special consideration',
+                        'Calories are burned rapidly in extreme cold - 5000+ per day',
+                        'Any exposed skin can suffer frostbite in under 30 seconds'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'sleepingbags',
+                        name: 'Arctic sleeping bags (compressed)',
+                        description: 'Extreme cold weather sleeping bags rated to -40°F',
+                        expertRank: 1,
+                        explanation: 'Essential for surviving sleep periods. Core temperature drops are fatal.'
+                    },
+                    {
+                        id: 'stove',
+                        name: 'Portable camp stove with fuel',
+                        description: 'Pressurized stove with 5 days of fuel',
+                        expertRank: 2,
+                        explanation: 'Provides heat, melts snow for water, and enables hot food/drinks.'
+                    },
+                    {
+                        id: 'flares',
+                        name: 'Signal flares (12 flares)',
+                        description: 'High-visibility aerial flares',
+                        expertRank: 3,
+                        explanation: 'Only reliable signaling in 24-hour darkness and storms.'
+                    },
+                    {
+                        id: 'tent',
+                        name: 'Four-season mountain tent',
+                        description: 'Reinforced tent for extreme conditions',
+                        expertRank: 4,
+                        explanation: 'Wind protection is critical. Reduces effective temperature by 40°F.'
+                    },
+                    {
+                        id: 'rations',
+                        name: 'High-calorie rations (10,000 cal/day)',
+                        description: 'Arctic survival food for 5 days',
+                        expertRank: 5,
+                        explanation: 'Extreme cold burns massive calories. Starvation accelerates hypothermia.'
+                    },
+                    {
+                        id: 'radio',
+                        name: 'Emergency radio beacon',
+                        description: 'Battery-powered emergency locator',
+                        expertRank: 6,
+                        explanation: 'Works in clear weather but batteries fail quickly in extreme cold.'
+                    },
+                    {
+                        id: 'skiis',
+                        name: 'Cross-country skis',
+                        description: 'Skis with poles for snow travel',
+                        expertRank: 7,
+                        explanation: 'Movement keeps you warm but increases exposure risk. Stay put is safer.'
+                    },
+                    {
+                        id: 'rope',
+                        name: '100 feet of rope',
+                        description: 'Strong nylon rope',
+                        expertRank: 8,
+                        explanation: 'Can create guidelines between shelters in whiteout conditions.'
+                    },
+                    {
+                        id: 'firstaid',
+                        name: 'Arctic first aid kit',
+                        description: 'Medical supplies for cold injuries',
+                        expertRank: 9,
+                        explanation: 'Treats frostbite but prevention through warmth is more critical.'
+                    },
+                    {
+                        id: 'knife',
+                        name: 'Survival knife',
+                        description: 'Large fixed-blade knife',
+                        expertRank: 10,
+                        explanation: 'Useful tool but manual tasks in extreme cold risk frostbite.'
+                    }
+                ]
+            },
+            
+            jungle: {
+                theme: {
+                    primaryDark: '#0d2818',
+                    primaryMedium: '#1a4d2e',
+                    primaryLight: '#4a7c59',
+                    accentPrimary: '#ff6b35',
+                    accentSecondary: '#f4a460',
+                    accentTertiary: '#ffd700'
+                },
+                content: {
+                    gameTitle: 'JUNGLE CRASH SURVIVAL',
+                    authorityName: 'MILITARY SURVIVAL',
+                    gameSubtitle: 'Jungle Warfare Training • Tropical Emergency Protocol',
+                    scenarioLabel: 'JUNGLE EMERGENCY',
+                    emergencyTitle: '⚠️ AIRCRAFT DOWN IN HOSTILE JUNGLE! ⚠️',
+                    emergencyScenario: `Your military transport has crashed deep in the Amazon rainforest. The pilot is dead, and the radio is destroyed. You and four other survivors have minor injuries. You're at least 100 miles from any known settlement.
+
+                    The jungle canopy is so thick that rescue aircraft will have extreme difficulty spotting you. Temperature is 95°F (35°C) with 98% humidity. Heavy rains occur daily, and the area is known for dangerous wildlife including jaguars, snakes, and poisonous insects.
+
+                    Your uniforms are already soaked with sweat and rain. Every movement through the dense vegetation is exhausting. Rescue could take 7-14 days if your emergency beacon is working through the canopy. You've salvaged 10 items from the wreckage.`,
+                    instructionsLabel: 'SURVIVAL PROTOCOL',
+                    instructionsTitle: 'JUNGLE SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 for jungle survival. Consider protection from wildlife, disease prevention, signaling through canopy, and maintaining health.',
+                    dragIcon: '🌴',
+                    dragInstructionsText: 'Prioritize for hostile jungle environment. Stay alert!',
+                    progressText: 'Analyzing jungle survival needs... Every item could mean life or death.',
+                    assessmentButton: 'Military Assessment',
+                    resetButton: 'Reset Mission'
+                },
+                config: {
+                    expertSource: 'Military Survival Experts',
+                    expertTitle: 'Jungle Survival Protocol',
+                    expertReadyMessage: 'Jungle Warfare Ready!',
+                    scoringThresholds: { excellent: 20, good: 30, fair: 40 },
+                    expertPriorities: [
+                        'Machete is king in jungle - creates shelter, signals, and protection',
+                        'Water purification prevents deadly diseases - biggest killer in jungle',
+                        'Signaling through triple canopy requires special techniques',
+                        'Insects and disease kill more than predators - protection essential',
+                        'Stay near crash site but improve position for visibility'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'machete',
+                        name: 'Machete with sheath',
+                        description: 'Heavy jungle knife',
+                        expertRank: 1,
+                        explanation: 'Essential for movement, shelter building, and clearing signal areas.'
+                    },
+                    {
+                        id: 'tablets',
+                        name: 'Water purification tablets (100)',
+                        description: 'Iodine purification tablets',
+                        expertRank: 2,
+                        explanation: 'Prevents waterborne diseases - biggest killer in jungle survival.'
+                    },
+                    {
+                        id: 'mirror',
+                        name: 'Signal mirror',
+                        description: 'Military signal mirror with sight',
+                        expertRank: 3,
+                        explanation: 'Best chance of signaling aircraft through small canopy gaps.'
+                    },
+                    {
+                        id: 'mosquito',
+                        name: 'Mosquito netting',
+                        description: 'Fine mesh netting for 4 people',
+                        expertRank: 4,
+                        explanation: 'Prevents malaria, dengue, and other insect-borne diseases.'
+                    },
+                    {
+                        id: 'tarp',
+                        name: 'Waterproof tarp',
+                        description: 'Camouflage tarp 10x10 feet',
+                        expertRank: 5,
+                        explanation: 'Essential rain protection and can collect clean rainwater.'
+                    },
+                    {
+                        id: 'firstaid',
+                        name: 'Jungle first aid kit',
+                        description: 'Includes antivenin and antibiotics',
+                        expertRank: 6,
+                        explanation: 'Treats bites, stings, and infections common in jungle.'
+                    },
+                    {
+                        id: 'flare',
+                        name: 'Flare gun with 6 flares',
+                        description: 'Aerial signal flares',
+                        expertRank: 7,
+                        explanation: 'Can penetrate canopy better than smoke, useful for rescue.'
+                    },
+                    {
+                        id: 'rations',
+                        name: 'Military MREs (10 days)',
+                        description: 'Meals Ready to Eat',
+                        expertRank: 8,
+                        explanation: 'Safe food source, though jungle can provide if necessary.'
+                    },
+                    {
+                        id: 'compass',
+                        name: 'Military compass',
+                        description: 'Lensatic compass',
+                        expertRank: 9,
+                        explanation: 'Limited use in dense jungle where visibility is 10-20 feet.'
+                    },
+                    {
+                        id: 'pistol',
+                        name: '9mm pistol with 30 rounds',
+                        description: 'Military sidearm',
+                        expertRank: 10,
+                        explanation: 'Poor jungle tool. Noise attracts danger more than provides safety.'
+                    }
+                ]
+            },
+            
+            mine: {
+                theme: {
+                    primaryDark: '#1a1a1a',
+                    primaryMedium: '#2d2d2d',
+                    primaryLight: '#4a4a4a',
+                    accentPrimary: '#ffa500',
+                    accentSecondary: '#ff8c00',
+                    accentTertiary: '#ffd700'
+                },
+                content: {
+                    gameTitle: 'MINE COLLAPSE SURVIVAL',
+                    authorityName: 'MINE SAFETY',
+                    gameSubtitle: 'Underground Emergency Training • Mine Rescue Protocol',
+                    scenarioLabel: 'MINE EMERGENCY',
+                    emergencyTitle: '⚠️ MINE COLLAPSE - TRAPPED UNDERGROUND! ⚠️',
+                    emergencyScenario: `A massive cave-in has trapped you and five other miners 2,000 feet underground. The main shaft is completely blocked, and it will take rescue teams 5-7 days to dig through safely. The mine's communication system is dead.
+
+                    You're in a stable pocket about 50 feet long by 30 feet wide with 8-foot ceilings. Air quality is currently good but won't last forever. Temperature is 65°F (18°C) but humidity is near 100%. Water is dripping from several points in the ceiling.
+
+                    The darkness is absolute when headlamps are off. Several miners are showing signs of panic. You have about 20 hours of battery life total across all headlamps. Below are 10 items available in your refuge area.`,
+                    instructionsLabel: 'SURVIVAL PROTOCOL',
+                    instructionsTitle: 'UNDERGROUND SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 for underground survival. Consider air quality, morale, signaling rescuers, and conserving resources for 7 days.',
+                    dragIcon: '⛏️',
+                    dragInstructionsText: 'Prioritize for underground survival. Darkness is your enemy!',
+                    progressText: 'Calculating underground survival needs... Stay calm and think clearly.',
+                    assessmentButton: 'Mine Safety Assessment',
+                    resetButton: 'Reset Emergency'
+                },
+                config: {
+                    expertSource: 'Mine Safety Experts',
+                    expertTitle: 'Mine Rescue Protocol',
+                    expertReadyMessage: 'Mine Rescue Ready!',
+                    scoringThresholds: { excellent: 18, good: 28, fair: 38 },
+                    expertPriorities: [
+                        'Air quality monitoring is critical - bad air kills without warning',
+                        'Preserve battery power - total darkness causes severe psychological stress',
+                        'Establish communication with surface to coordinate rescue',
+                        'Maintain morale and prevent panic in confined space',
+                        'Ration all resources for extended entrapment'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'detector',
+                        name: 'Multi-gas detector',
+                        description: 'Monitors oxygen, methane, and carbon monoxide',
+                        expertRank: 1,
+                        explanation: 'Essential for detecting deadly gases. Bad air kills before you notice.'
+                    },
+                    {
+                        id: 'phone',
+                        name: 'Mine rescue phone system',
+                        description: 'Hardwired emergency phone (if lines intact)',
+                        expertRank: 2,
+                        explanation: 'Direct communication with surface coordinates rescue and maintains morale.'
+                    },
+                    {
+                        id: 'headlamps',
+                        name: 'Spare headlamp batteries (40 hours)',
+                        description: 'Extra batteries for LED headlamps',
+                        expertRank: 3,
+                        explanation: 'Light is sanity underground. Darkness causes panic and accidents.'
+                    },
+                    {
+                        id: 'pipes',
+                        name: 'Steel pipes and hammer',
+                        description: 'For tapping SOS signals',
+                        expertRank: 4,
+                        explanation: 'Sound travels through rock. Helps rescuers locate your exact position.'
+                    },
+                    {
+                        id: 'water',
+                        name: 'Water storage containers',
+                        description: 'Clean containers for collecting drip water',
+                        expertRank: 5,
+                        explanation: 'Captures safe drinking water. Dehydration impairs judgment quickly.'
+                    },
+                    {
+                        id: 'firstaid',
+                        name: 'Mine first aid kit',
+                        description: 'Includes treatments for shock',
+                        expertRank: 6,
+                        explanation: 'Treats injuries and contains sedatives for panic attacks.'
+                    },
+                    {
+                        id: 'blankets',
+                        name: 'Emergency blankets (6)',
+                        description: 'Reflective mylar blankets',
+                        expertRank: 7,
+                        explanation: 'Prevents hypothermia in damp conditions and treats shock.'
+                    },
+                    {
+                        id: 'food',
+                        name: 'Energy bars (3 days supply)',
+                        description: 'High-calorie food bars',
+                        expertRank: 8,
+                        explanation: 'Maintains energy but humans can survive weeks without food.'
+                    },
+                    {
+                        id: 'chalk',
+                        name: 'Chalk and spray paint',
+                        description: 'For marking explored areas',
+                        expertRank: 9,
+                        explanation: 'Prevents getting lost if exploring for exits. Mostly psychological benefit.'
+                    },
+                    {
+                        id: 'cards',
+                        name: 'Playing cards',
+                        description: 'Deck of cards',
+                        expertRank: 10,
+                        explanation: 'Helps pass time but uses precious light. Better to conserve energy.'
+                    }
+                ]
+            },
+            
+            deepsea: {
+                theme: {
+                    primaryDark: '#001433',
+                    primaryMedium: '#002855',
+                    primaryLight: '#003d7a',
+                    accentPrimary: '#00ffff',
+                    accentSecondary: '#00ced1',
+                    accentTertiary: '#ffd700'
+                },
+                content: {
+                    gameTitle: 'DEEP SEA EMERGENCY SURVIVAL',
+                    authorityName: 'COMMERCIAL DIVING',
+                    gameSubtitle: 'Underwater Emergency Training • Deep Sea Rescue Protocol',
+                    scenarioLabel: 'UNDERWATER EMERGENCY',
+                    emergencyTitle: '⚠️ DEEP SEA EMERGENCY - 300 FEET DOWN! ⚠️',
+                    emergencyScenario: `Your deep sea diving bell has lost power and buoyancy control at 300 feet depth. The surface support vessel was hit by a rogue wave and communications are down. You and three other commercial divers are trapped in the bell with limited resources.
+
+                    The emergency ballast release has failed. Water temperature is 38°F (3°C). You have approximately 48 hours of emergency life support, but hypothermia is an immediate threat. The bell is slowly sinking and has settled on a ledge at 320 feet.
+
+                    Surface crews are working to restore systems, but rough seas are hampering efforts. Emergency ascent without decompression would be fatal. You must survive until the backup dive team can reach you, estimated at 12-24 hours. You have access to 10 emergency items.`,
+                    instructionsLabel: 'DEEP SEA PROTOCOL',
+                    instructionsTitle: 'UNDERWATER SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 for deep sea survival. Consider life support, thermal protection, emergency ascent risks, and communication.',
+                    dragIcon: '🌊',
+                    dragInstructionsText: 'Prioritize for extreme underwater emergency. Pressure is building!',
+                    progressText: 'Analyzing deep sea survival priorities... Every decision is critical.',
+                    assessmentButton: 'Dive Team Assessment',
+                    resetButton: 'Reset Protocol'
+                },
+                config: {
+                    expertSource: 'Commercial Diving Experts',
+                    expertTitle: 'Deep Sea Rescue Protocol',
+                    expertReadyMessage: 'Deep Sea Certified!',
+                    scoringThresholds: { excellent: 16, good: 26, fair: 36 },
+                    expertPriorities: [
+                        'Breathing gas management is absolutely critical - no air means death in minutes',
+                        'Thermal protection prevents hypothermia which impairs judgment fatally',
+                        'Communication with surface coordinates rescue and prevents panic',
+                        'Decompression sickness prevention during any emergency ascent',
+                        'Carbon dioxide buildup is as dangerous as low oxygen'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'scrubber',
+                        name: 'CO2 scrubber cartridges',
+                        description: 'Removes carbon dioxide from breathing air',
+                        expertRank: 1,
+                        explanation: 'CO2 buildup kills faster than oxygen depletion. Absolutely critical.'
+                    },
+                    {
+                        id: 'heater',
+                        name: 'Emergency heating packs',
+                        description: 'Chemical heat packs for 24 hours',
+                        expertRank: 2,
+                        explanation: 'Prevents hypothermia which causes fatal decision-making errors.'
+                    },
+                    {
+                        id: 'radio',
+                        name: 'Emergency through-water comms',
+                        description: 'Acoustic emergency communication device',
+                        expertRank: 3,
+                        explanation: 'Only way to coordinate rescue and report life support status.'
+                    },
+                    {
+                        id: 'oxygen',
+                        name: 'Emergency oxygen bottles',
+                        description: 'Pure O2 for 12 hours (careful mixing required)',
+                        expertRank: 4,
+                        explanation: 'Extends life support but requires careful mixing to avoid oxygen toxicity.'
+                    },
+                    {
+                        id: 'suits',
+                        name: 'Thermal survival suits',
+                        description: 'Insulated underwater survival suits',
+                        expertRank: 5,
+                        explanation: 'Reduces heat loss dramatically. Can double survival time in cold.'
+                    },
+                    {
+                        id: 'gauge',
+                        name: 'Depth and pressure gauges',
+                        description: 'Monitors bell depth and internal pressure',
+                        expertRank: 6,
+                        explanation: 'Critical for any emergency ascent planning and decompression.'
+                    },
+                    {
+                        id: 'flares',
+                        name: 'Underwater emergency flares',
+                        description: 'High-visibility underwater flares (6)',
+                        expertRank: 7,
+                        explanation: 'Helps rescue divers locate bell in murky water.'
+                    },
+                    {
+                        id: 'water',
+                        name: 'Fresh water (2 gallons)',
+                        description: 'Drinking water supply',
+                        expertRank: 8,
+                        explanation: 'Prevents dehydration which worsens decompression sickness risk.'
+                    },
+                    {
+                        id: 'medical',
+                        name: 'Diving medical kit',
+                        description: 'Includes treatments for barotrauma',
+                        expertRank: 9,
+                        explanation: 'Treats pressure injuries but prevention is more critical.'
+                    },
+                    {
+                        id: 'tools',
+                        name: 'Emergency tool kit',
+                        description: 'Basic tools for repairs',
+                        expertRank: 10,
+                        explanation: 'Limited use in catastrophic failures. Better to conserve oxygen.'
+                    }
+                ]
+            },
+            
+            asteroid: {
+                theme: {
+                    primaryDark: '#0a0a0a',
+                    primaryMedium: '#1a1a2e',
+                    primaryLight: '#16213e',
+                    accentPrimary: '#e94560',
+                    accentSecondary: '#ff006e',
+                    accentTertiary: '#ffd700'
+                },
+                content: {
+                    gameTitle: 'ASTEROID MINING CRISIS',
+                    authorityName: 'SPACE MINING CORP',
+                    gameSubtitle: 'Space Emergency Training • Zero-G Survival Protocol',
+                    scenarioLabel: 'SPACE EMERGENCY',
+                    emergencyTitle: '⚠️ ASTEROID STATION CRITICAL FAILURE! ⚠️',
+                    emergencyScenario: `Your asteroid mining station on Asteroid 2029-TX has suffered a catastrophic solar panel failure during a solar storm. Main power is offline, and you're operating on emergency batteries with 72 hours of power remaining. You and your crew of four are 2.5 AU from Earth.
+
+                    The station is slowly losing pressure through micro-fractures. Internal temperature is dropping as heating systems fail. You're in zero gravity, and the asteroid's rotation is causing disorienting day/night cycles every 3 hours. Communication with Earth has a 25-minute delay each way.
+
+                    A rescue ship was dispatched immediately but will take 7-10 days to reach you. Your survival depends on managing limited resources in the harsh environment of space. You have access to 10 emergency items from the mining station's supplies.`,
+                    instructionsLabel: 'EMERGENCY PROTOCOL',
+                    instructionsTitle: 'ZERO-G SURVIVAL PRIORITIES',
+                    instructionsText: 'Rank items 1-10 for space survival. Consider life support, power management, pressure retention, and maintaining crew sanity in isolation.',
+                    dragIcon: '🚀',
+                    dragInstructionsText: 'Prioritize for deep space survival. Houston, we need solutions!',
+                    progressText: 'Computing survival priorities... In space, every resource is precious.',
+                    assessmentButton: 'Space Corp Assessment',
+                    resetButton: 'Reset Systems'
+                },
+                config: {
+                    expertSource: 'Space Survival Experts',
+                    expertTitle: 'Space Mining Safety Protocol',
+                    expertReadyMessage: 'Space Certified!',
+                    scoringThresholds: { excellent: 20, good: 30, fair: 40 },
+                    expertPriorities: [
+                        'Pressure retention is critical - even small leaks are fatal over time',
+                        'Power management determines life support duration',
+                        'CO2 scrubbing is as important as oxygen supply',
+                        'Psychological factors in isolation can be as deadly as system failures',
+                        'Redundancy in all critical systems - space offers no second chances'
+                    ]
+                },
+                items: [
+                    {
+                        id: 'sealant',
+                        name: 'Emergency hull sealant',
+                        description: 'Quick-setting foam for pressure leaks',
+                        expertRank: 1,
+                        explanation: 'Stops pressure loss immediately. No atmosphere means death in seconds.'
+                    },
+                    {
+                        id: 'battery',
+                        name: 'Portable battery packs',
+                        description: 'High-capacity batteries (48 hours each)',
+                        expertRank: 2,
+                        explanation: 'Extends life support operation. Power is life in space.'
+                    },
+                    {
+                        id: 'scrubbers',
+                        name: 'CO2 scrubber cartridges',
+                        description: 'Lithium hydroxide canisters',
+                        expertRank: 3,
+                        explanation: 'CO2 poisoning occurs before oxygen depletion. Critical for survival.'
+                    },
+                    {
+                        id: 'heaters',
+                        name: 'Emergency heating units',
+                        description: 'Battery-powered space heaters',
+                        expertRank: 4,
+                        explanation: 'Prevents freezing. Electronics and humans fail in extreme cold.'
+                    },
+                    {
+                        id: 'water',
+                        name: 'Water recycling unit',
+                        description: 'Portable water purification system',
+                        expertRank: 5,
+                        explanation: 'Extends water supply dramatically. Dehydration is fatal in days.'
+                    },
+                    {
+                        id: 'comm',
+                        name: 'Emergency beacon',
+                        description: 'High-power distress beacon',
+                        expertRank: 6,
+                        explanation: 'Helps rescue ship locate station precisely in vast space.'
+                    },
+                    {
+                        id: 'food',
+                        name: 'Emergency rations',
+                        description: 'Compressed food for 10 days',
+                        expertRank: 7,
+                        explanation: 'Maintains crew health but less critical than air and water.'
+                    },
+                    {
+                        id: 'tablets',
+                        name: 'Entertainment tablets',
+                        description: 'Loaded with movies, books, games',
+                        expertRank: 8,
+                        explanation: 'Maintains psychological health. Isolation madness is real danger.'
+                    },
+                    {
+                        id: 'meds',
+                        name: 'Space medicine kit',
+                        description: 'Includes radiation sickness treatment',
+                        expertRank: 9,
+                        explanation: 'Treats space-specific ailments but prevention is key.'
+                    },
+                    {
+                        id: 'tools',
+                        name: 'EVA repair tools',
+                        description: 'Tools for spacewalk repairs',
+                        expertRank: 10,
+                        explanation: 'Risky to use. EVAs consume resources and risk suit punctures.'
+                    }
+                ]
+            }
+        };
+
+        // ================================================================
+        // GAME STATE MANAGEMENT
+        // ================================================================
+        let currentScenario = null;
+        let currentOrder = [];
+        let draggedElement = null;
+
+        // ================================================================
+        // SCENARIO LOADING FUNCTIONS
+        // ================================================================
+        function loadScenario(scenarioKey) {
+            if (!scenarioKey || !SCENARIOS[scenarioKey]) {
+                return;
+            }
+            
+            // Hide welcome screen
+            document.getElementById('welcomeScreen').style.display = 'none';
+            
+            // Load scenario data
+            currentScenario = SCENARIOS[scenarioKey];
+            
+            // Apply theme colors
+            applyTheme(currentScenario.theme);
+            
+            // Update UI content
+            updateUIContent(currentScenario.content);
+            
+            // Show game interface with animation
+            setTimeout(() => {
+                document.getElementById('gameHeader').classList.add('show');
+                document.getElementById('gameContent').classList.add('show');
+            }, 100);
+            
+            // Initialize game
+            initGame();
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            root.style.setProperty('--primary-dark', theme.primaryDark);
+            root.style.setProperty('--primary-medium', theme.primaryMedium);
+            root.style.setProperty('--primary-light', theme.primaryLight);
+            root.style.setProperty('--accent-primary', theme.accentPrimary);
+            root.style.setProperty('--accent-secondary', theme.accentSecondary);
+            root.style.setProperty('--accent-tertiary', theme.accentTertiary);
+        }
+
+        function updateUIContent(content) {
+            // Header
+            document.getElementById('authorityLogo').textContent = content.authorityName;
+            document.getElementById('gameTitle').textContent = content.gameTitle;
+            document.getElementById('gameSubtitle').textContent = content.gameSubtitle;
+            
+            // Scenario
+            document.getElementById('scenarioBox').setAttribute('data-label', content.scenarioLabel);
+            document.getElementById('scenarioTitle').textContent = content.emergencyTitle;
+            document.getElementById('scenarioText').textContent = content.emergencyScenario;
+            
+            // Instructions
+            document.getElementById('instructions').setAttribute('data-label', content.instructionsLabel);
+            document.getElementById('instructionsTitle').textContent = content.instructionsTitle;
+            document.getElementById('instructionsText').textContent = content.instructionsText;
+            
+            // Interface
+            document.getElementById('dragIcon').textContent = content.dragIcon;
+            document.getElementById('dragInstructionsText').textContent = content.dragInstructionsText;
+            document.getElementById('progressText').textContent = content.progressText;
+            
+            // Buttons
+            document.getElementById('checkBtn').textContent = content.assessmentButton;
+            document.getElementById('resetBtn').textContent = content.resetButton;
+        }
+
+        // ================================================================
+        // CORE GAME FUNCTIONS
+        // ================================================================
+        function initGame() {
+            if (!currentScenario) return;
+            
+            // Hide results
+            document.getElementById('results').classList.remove('show');
+            
+            // Shuffle items
+            currentOrder = [...currentScenario.items].sort(() => Math.random() - 0.5);
+            renderItems();
+        }
+
+        function renderItems() {
+            const rankingArea = document.getElementById('rankingArea');
+            rankingArea.innerHTML = '';
+            
+            currentOrder.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.draggable = true;
+                card.dataset.itemId = item.id;
+                
+                card.innerHTML = `
+                    <div class="rank-number">${index + 1}</div>
+                    <div class="item-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+                    </div>
+                    <div class="drag-handle">⋮⋮</div>
+                `;
+                
+                // Add drag event listeners
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('drop', handleDrop);
+                card.addEventListener('dragenter', handleDragEnter);
+                card.addEventListener('dragleave', handleDragLeave);
+                
+                rankingArea.appendChild(card);
+            });
+        }
+
+        // ================================================================
+        // DRAG AND DROP HANDLERS
+        // ================================================================
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedElement = null;
+            
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            if (e.target.closest('.item-card') && e.target.closest('.item-card') !== draggedElement) {
+                e.target.closest('.item-card').classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            if (e.target.closest('.item-card')) {
+                e.target.closest('.item-card').classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) e.stopPropagation();
+
+            const dropTarget = e.target.closest('.item-card');
+            if (dropTarget && draggedElement && dropTarget !== draggedElement) {
+                const draggedId = draggedElement.dataset.itemId;
+                const dropTargetId = dropTarget.dataset.itemId;
+                
+                const draggedIndex = currentOrder.findIndex(item => item.id === draggedId);
+                const dropTargetIndex = currentOrder.findIndex(item => item.id === dropTargetId);
+                
+                const draggedItem = currentOrder.splice(draggedIndex, 1)[0];
+                currentOrder.splice(dropTargetIndex, 0, draggedItem);
+                
+                renderItems();
+            }
+            return false;
+        }
+
+        // ================================================================
+        // SCORING AND RESULTS
+        // ================================================================
+        function checkRankings() {
+            if (!currentScenario) return;
+            
+            let totalScore = 0;
+            const config = currentScenario.config;
+            
+            // Calculate score
+            currentOrder.forEach((item, index) => {
+                const userRank = index + 1;
+                const expertRank = item.expertRank;
+                const difference = Math.abs(userRank - expertRank);
+                totalScore += difference;
+            });
+
+            // Determine assessment
+            let assessment = '';
+            let assessmentColor = '';
+            
+            if (totalScore <= config.scoringThresholds.excellent) {
+                assessment = `EXCELLENT - ${config.expertReadyMessage}`;
+                assessmentColor = '#10B981';
+            } else if (totalScore <= config.scoringThresholds.good) {
+                assessment = 'GOOD - You\'d likely survive!';
+                assessmentColor = '#84CC16';
+            } else if (totalScore <= config.scoringThresholds.fair) {
+                assessment = 'FAIR - Risky but possible';
+                assessmentColor = '#F59E0B';
+            } else {
+                assessment = 'POOR - Survival unlikely';
+                assessmentColor = '#EF4444';
+            }
+
+            // Build results HTML
+            let results = `
+                <div class="score">
+                    <div>SURVIVAL ASSESSMENT SCORE: ${totalScore}</div>
+                    <div style="color: ${assessmentColor}; margin-top: 10px;">${assessment}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 10px;">
+                        (Lower scores indicate better survival chances)
+                    </div>
+                </div>
+                
+                <div class="expert-explanation">
+                    <strong>${config.expertTitle}:</strong> Your score reflects how well your priorities match ${config.expertSource} survival experts. 
+                    Lower scores indicate better alignment with proven survival strategies.
+                </div>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Your Rank</th>
+                            <th>Expert Rank</th>
+                            <th>Difference</th>
+                            <th>${config.expertSource} Reasoning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Sort items by expert ranking for display
+            const sortedItems = [...currentScenario.items].sort((a, b) => a.expertRank - b.expertRank);
+            
+            sortedItems.forEach(item => {
+                const userRank = currentOrder.findIndex(i => i.id === item.id) + 1;
+                const expertRank = item.expertRank;
+                const difference = Math.abs(userRank - expertRank);
+                
+                let diffColor = '#10B981';
+                if (difference > 0 && difference <= 2) {
+                    diffColor = '#F59E0B';
+                } else if (difference > 2) {
+                    diffColor = '#EF4444';
+                }
+                
+                results += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td style="text-align: center;">${userRank}</td>
+                        <td style="text-align: center; color: var(--text-secondary);">${expertRank}</td>
+                        <td style="text-align: center; color: ${diffColor};">+${difference}</td>
+                        <td style="font-size: 11px;">${item.explanation}</td>
+                    </tr>
+                `;
+            });
+
+            results += `
+                    </tbody>
+                </table>
+                
+                <div class="expert-explanation">
+                    <strong>Key Survival Priorities:</strong><br>
+                    ${config.expertPriorities.map(priority => `• <strong>${priority}</strong>`).join('<br>')}
+                </div>
+            `;
+
+            // Display results
+            document.getElementById('results').innerHTML = results;
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetGame() {
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('results').innerHTML = '';
+            initGame();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

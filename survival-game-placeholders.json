@@ -1,0 +1,255 @@
+{
+  "metadata": {
+    "template_name": "Survival Game Template",
+    "version": "1.0",
+    "description": "Complete list of placeholders for survival scenario customization",
+    "company": "Seed 13 Productions"
+  },
+  
+  "html_placeholders": {
+    "header_section": {
+      "GAME_TITLE": "Main game title (e.g., 'MOON SURVIVAL MISSION')",
+      "AUTHORITY_NAME": "Authority organization (e.g., 'NASA', 'COAST GUARD', 'FOREST SERVICE')",
+      "GAME_SUBTITLE": "Descriptive subtitle (e.g., 'Astronaut Training Exercise • Mission Control Interface')"
+    },
+    
+    "scenario_section": {
+      "SCENARIO_LABEL": "Scenario box label (e.g., 'EMERGENCY SITUATION', 'MISSION BRIEFING')",
+      "EMERGENCY_TITLE": "Emergency alert title (e.g., '⚠️ MAYDAY! MAYDAY! ⚠️')",
+      "EMERGENCY_SCENARIO_TEXT": "Full scenario description - 3-4 paragraphs of emergency situation details"
+    },
+    
+    "instructions_section": {
+      "INSTRUCTIONS_LABEL": "Instructions box label (e.g., 'SURVIVAL PROTOCOL', 'RESCUE PROTOCOL')",
+      "INSTRUCTIONS_TITLE": "Instructions header (e.g., 'MISSION PARAMETERS', 'SURVIVAL PROTOCOL')",
+      "INSTRUCTIONS_TEXT": "Detailed instructions on what to consider when ranking items"
+    },
+    
+    "interface_section": {
+      "DRAG_ICON": "Thematic emoji (e.g., '🌙', '🌊', '🏔️', '🧊')",
+      "DRAG_INSTRUCTIONS_TEXT": "Encouragement text for drag interface",
+      "PROGRESS_TEXT": "Text shown while user arranges items"
+    },
+    
+    "controls_section": {
+      "ASSESSMENT_BUTTON_TEXT": "Main action button (e.g., 'NASA Assessment', 'Coast Guard Assessment')",
+      "RESET_BUTTON_TEXT": "Reset button text (e.g., 'Reset Mission', 'Reset Scenario')"
+    },
+    
+    "branding_section": {
+      "COMPANY_LOGO": "Company name for logo area",
+      "COMPANY_TAGLINE": "Company tagline (e.g., 'Survival Decision Series')"
+    }
+  },
+  
+  "javascript_config_placeholders": {
+    "scenario_identity": {
+      "GAME_TITLE": "Same as HTML game title",
+      "EXPERT_ORGANIZATION": "Expert source (e.g., 'NASA Scientists', 'Coast Guard Experts')",
+      "EXPERT_PROTOCOL_NAME": "Protocol name (e.g., 'NASA Survival Protocol', 'Maritime Rescue Protocol')",
+      "ASSESSMENT_BUTTON_TEXT": "Same as HTML assessment button",
+      "RESET_BUTTON_TEXT": "Same as HTML reset button"
+    },
+    
+    "scoring_messages": {
+      "EXPERT_READY_MESSAGE": "Excellence message (e.g., 'NASA Astronaut Material!', 'Coast Guard Ready!')"
+    },
+    
+    "expert_priorities": {
+      "PRIORITY_1": "First key survival principle with explanation",
+      "PRIORITY_2": "Second key survival principle with explanation", 
+      "PRIORITY_3": "Third key survival principle with explanation",
+      "PRIORITY_4": "Fourth key survival principle with explanation",
+      "PRIORITY_5": "Fifth key survival principle with explanation"
+    }
+  },
+  
+  "survival_items_placeholders": {
+    "item_1": {
+      "ITEM_1_NAME": "Most important item name",
+      "ITEM_1_DESC": "Brief description of most important item",
+      "ITEM_1_EXPLANATION": "Expert reasoning for ranking #1"
+    },
+    "item_2": {
+      "ITEM_2_NAME": "Second most important item name",
+      "ITEM_2_DESC": "Brief description of second item",
+      "ITEM_2_EXPLANATION": "Expert reasoning for ranking #2"
+    },
+    "item_3": {
+      "ITEM_3_NAME": "Third most important item name",
+      "ITEM_3_DESC": "Brief description of third item", 
+      "ITEM_3_EXPLANATION": "Expert reasoning for ranking #3"
+    },
+    "item_4": {
+      "ITEM_4_NAME": "Fourth most important item name",
+      "ITEM_4_DESC": "Brief description of fourth item",
+      "ITEM_4_EXPLANATION": "Expert reasoning for ranking #4"
+    },
+    "item_5": {
+      "ITEM_5_NAME": "Fifth most important item name",
+      "ITEM_5_DESC": "Brief description of fifth item",
+      "ITEM_5_EXPLANATION": "Expert reasoning for ranking #5"
+    },
+    "item_6": {
+      "ITEM_6_NAME": "Sixth most important item name",
+      "ITEM_6_DESC": "Brief description of sixth item",
+      "ITEM_6_EXPLANATION": "Expert reasoning for ranking #6"
+    },
+    "item_7": {
+      "ITEM_7_NAME": "Seventh most important item name",
+      "ITEM_7_DESC": "Brief description of seventh item",
+      "ITEM_7_EXPLANATION": "Expert reasoning for ranking #7"
+    },
+    "item_8": {
+      "ITEM_8_NAME": "Eighth most important item name",
+      "ITEM_8_DESC": "Brief description of eighth item",
+      "ITEM_8_EXPLANATION": "Expert reasoning for ranking #8"
+    },
+    "item_9": {
+      "ITEM_9_NAME": "Ninth most important item name",
+      "ITEM_9_DESC": "Brief description of ninth item",
+      "ITEM_9_EXPLANATION": "Expert reasoning for ranking #9"
+    },
+    "item_10": {
+      "ITEM_10_NAME": "Least important item name",
+      "ITEM_10_DESC": "Brief description of least important item",
+      "ITEM_10_EXPLANATION": "Expert reasoning for ranking #10"
+    }
+  },
+  
+  "example_scenario_configs": {
+    "moon_survival": {
+      "GAME_TITLE": "LUNAR SURVIVAL MISSION",
+      "AUTHORITY_NAME": "NASA",
+      "GAME_SUBTITLE": "Astronaut Training Exercise • Mission Control Interface",
+      "DRAG_ICON": "🌙",
+      "EXPERT_ORGANIZATION": "NASA Scientists",
+      "EXPERT_PROTOCOL_NAME": "NASA Survival Protocol",
+      "EXPERT_READY_MESSAGE": "NASA Astronaut Material!"
+    },
+    
+    "shipwreck_survival": {
+      "GAME_TITLE": "SHIPWRECK SURVIVAL MISSION", 
+      "AUTHORITY_NAME": "COAST GUARD",
+      "GAME_SUBTITLE": "Maritime Emergency Training • Coast Guard Protocol",
+      "DRAG_ICON": "🌊",
+      "EXPERT_ORGANIZATION": "Coast Guard Experts",
+      "EXPERT_PROTOCOL_NAME": "Maritime Rescue Protocol",
+      "EXPERT_READY_MESSAGE": "Coast Guard Ready!"
+    },
+    
+    "mountain_crash": {
+      "GAME_TITLE": "HIGH ALTITUDE CRASH SURVIVAL",
+      "AUTHORITY_NAME": "US FOREST SERVICE", 
+      "GAME_SUBTITLE": "Mountain Rescue Training • Wilderness Emergency Protocol",
+      "DRAG_ICON": "🏔️",
+      "EXPERT_ORGANIZATION": "Forest Service Search & Rescue",
+      "EXPERT_PROTOCOL_NAME": "Mountain Rescue Protocol", 
+      "EXPERT_READY_MESSAGE": "Mountain Rescue Ready!"
+    },
+    
+    "arctic_survival": {
+      "GAME_TITLE": "ARCTIC SURVIVAL MISSION",
+      "AUTHORITY_NAME": "POLAR RESEARCH",
+      "GAME_SUBTITLE": "Cold Weather Training • Arctic Emergency Protocol", 
+      "DRAG_ICON": "🧊",
+      "EXPERT_ORGANIZATION": "Arctic Research Experts",
+      "EXPERT_PROTOCOL_NAME": "Arctic Survival Protocol",
+      "EXPERT_READY_MESSAGE": "Arctic Explorer Ready!"
+    },
+    
+    "jungle_crash": {
+      "GAME_TITLE": "JUNGLE CRASH SURVIVAL",
+      "AUTHORITY_NAME": "MILITARY SURVIVAL",
+      "GAME_SUBTITLE": "Jungle Warfare Training • Tropical Emergency Protocol",
+      "DRAG_ICON": "🌴", 
+      "EXPERT_ORGANIZATION": "Military Survival Experts",
+      "EXPERT_PROTOCOL_NAME": "Jungle Survival Protocol",
+      "EXPERT_READY_MESSAGE": "Jungle Warfare Ready!"
+    },
+    
+    "mine_collapse": {
+      "GAME_TITLE": "MINE COLLAPSE SURVIVAL",
+      "AUTHORITY_NAME": "MINE SAFETY",
+      "GAME_SUBTITLE": "Underground Emergency Training • Mine Rescue Protocol",
+      "DRAG_ICON": "⛏️",
+      "EXPERT_ORGANIZATION": "Mine Safety Experts", 
+      "EXPERT_PROTOCOL_NAME": "Mine Rescue Protocol",
+      "EXPERT_READY_MESSAGE": "Mine Rescue Ready!"
+    },
+    
+    "deep_sea_emergency": {
+      "GAME_TITLE": "DEEP SEA EMERGENCY SURVIVAL",
+      "AUTHORITY_NAME": "COMMERCIAL DIVING",
+      "GAME_SUBTITLE": "Underwater Emergency Training • Deep Sea Rescue Protocol",
+      "DRAG_ICON": "🌊",
+      "EXPERT_ORGANIZATION": "Commercial Diving Experts",
+      "EXPERT_PROTOCOL_NAME": "Deep Sea Rescue Protocol", 
+      "EXPERT_READY_MESSAGE": "Deep Sea Certified!"
+    },
+    
+    "asteroid_mining": {
+      "GAME_TITLE": "ASTEROID MINING CRISIS",
+      "AUTHORITY_NAME": "SPACE MINING CORP",
+      "GAME_SUBTITLE": "Space Emergency Training • Zero-G Survival Protocol",
+      "DRAG_ICON": "🚀",
+      "EXPERT_ORGANIZATION": "Space Survival Experts",
+      "EXPERT_PROTOCOL_NAME": "Space Mining Safety Protocol",
+      "EXPERT_READY_MESSAGE": "Space Certified!"
+    }
+  },
+  
+  "css_theme_variables": {
+    "primary_colors": {
+      "--primary-dark": "Background dark color (hex)",
+      "--primary-medium": "Background medium color (hex)", 
+      "--primary-light": "Accent light color (hex)"
+    },
+    "accent_colors": {
+      "--accent-primary": "Main accent color for buttons/borders (hex)",
+      "--accent-secondary": "Secondary accent color (hex)",
+      "--accent-tertiary": "Tertiary accent for warnings (hex)"
+    },
+    "text_colors": {
+      "--text-primary": "Main text color (hex)",
+      "--text-secondary": "Secondary text color (hex)",
+      "--text-light": "Light text variant (hex)"
+    },
+    "semantic_colors": {
+      "--success-color": "Excellent score color (hex)",
+      "--warning-color": "Fair score color (hex)", 
+      "--danger-color": "Poor score color (hex)",
+      "--info-color": "Information color (hex)"
+    }
+  },
+  
+  "usage_instructions": {
+    "step_1": "Copy the survival_game_template.html file",
+    "step_2": "Use find-and-replace to substitute all {{PLACEHOLDER}} values",
+    "step_3": "Customize CSS color variables in :root section",
+    "step_4": "Populate the 10-item survival items array with expert data",
+    "step_5": "Test scoring thresholds and adjust if needed",
+    "step_6": "Deploy and test complete game"
+  },
+  
+  "recommended_scoring_thresholds": {
+    "well_researched_scenarios": {
+      "excellent_threshold": 15,
+      "good_threshold": 25, 
+      "fair_threshold": 35,
+      "description": "NASA/Coast Guard scenarios with solid expert data"
+    },
+    "moderately_researched_scenarios": {
+      "excellent_threshold": 18,
+      "good_threshold": 28,
+      "fair_threshold": 38, 
+      "description": "Military/Forest Service scenarios"
+    },
+    "experimental_scenarios": {
+      "excellent_threshold": 20,
+      "good_threshold": 30,
+      "fair_threshold": 40,
+      "description": "Future/speculative scenarios like asteroid mining"
+    }
+  }
+}

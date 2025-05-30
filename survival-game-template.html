@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{GAME_TITLE}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* =================================================================
+           MODULAR CSS VARIABLES - CUSTOMIZE COLORS FOR EACH SCENARIO
+           ================================================================= */
+        :root {
+            /* PRIMARY THEME COLORS - Change these for each scenario */
+            --primary-dark: #041E42;      /* Background dark color */
+            --primary-medium: #1B2951;    /* Background medium color */  
+            --primary-light: #5A9FD4;     /* Accent light color */
+            --accent-primary: #FC3D21;    /* Main accent (buttons, borders) */
+            --accent-secondary: #FF6B35;  /* Secondary accent */
+            --accent-tertiary: #FFD700;   /* Tertiary accent (warnings) */
+            
+            /* TEXT COLORS */
+            --text-primary: #FFFFFF;      /* Main text */
+            --text-secondary: #A8B2D1;    /* Secondary text */
+            --text-light: #E6F3E6;        /* Light text variant */
+            
+            /* SEMANTIC COLORS */
+            --success-color: #10B981;     /* Excellent scores */
+            --warning-color: #F59E0B;     /* Fair scores */
+            --danger-color: #EF4444;      /* Poor scores */
+            --info-color: #3B82F6;        /* Information */
+        }
+        
+        /* =================================================================
+           BASE LAYOUT AND TYPOGRAPHY
+           ================================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(4, 30, 66, 0.95); /* Semi-transparent overlay */
+            border: 3px solid var(--accent-primary);
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(252, 61, 33, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+        
+        /* =================================================================
+           HEADER SECTION
+           ================================================================= */
+        .header {
+            background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-dark) 100%);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent-primary);
+            position: relative;
+        }
+        
+        /* Decorative top border */
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
+        }
+        
+        /* Authority/Organization badge (NASA, Coast Guard, Forest Service, etc.) */
+        .authority-logo {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: var(--text-primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .title {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-shadow: 0 0 15px rgba(252, 61, 33, 0.6);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           MAIN GAME CONTENT AREA
+           ================================================================= */
+        .game-content {
+            padding: 30px;
+        }
+        
+        /* Emergency Scenario Description Box */
+        .scenario-box {
+            background: linear-gradient(135deg, rgba(27, 41, 81, 0.8) 0%, rgba(4, 30, 66, 0.6) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 15px rgba(90, 159, 212, 0.1);
+            position: relative;
+        }
+        
+        /* Label for scenario box */
+        .scenario-box::before {
+            content: '{{SCENARIO_LABEL}}'; /* e.g., 'EMERGENCY SITUATION', 'MISSION BRIEFING' */
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .scenario-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 18px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .scenario-text {
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        
+        /* Instructions Box */
+        .instructions {
+            background: linear-gradient(135deg, rgba(252, 61, 33, 0.15) 0%, rgba(255, 107, 53, 0.1) 100%);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 18px;
+            margin: 20px 0;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        /* Label for instructions */
+        .instructions::before {
+            content: '{{INSTRUCTIONS_LABEL}}'; /* e.g., 'SURVIVAL PROTOCOL', 'MISSION PARAMETERS' */
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: var(--primary-dark);
+            color: var(--accent-primary);
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        /* Drag Instructions */
+        .drag-instructions {
+            background: linear-gradient(135deg, rgba(90, 159, 212, 0.15) 0%, rgba(168, 178, 209, 0.1) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        /* Progress Indicator */
+        .progress-indicator {
+            text-align: center;
+            font-size: 15px;
+            margin: 20px 0;
+            color: var(--primary-light);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           ITEM RANKING INTERFACE
+           ================================================================= */
+        .ranking-area {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 20px 0;
+            min-height: 400px;
+        }
+        
+        /* Individual Survival Item Cards */
+        .item-card {
+            background: linear-gradient(135deg, rgba(27, 41, 81, 0.9) 0%, rgba(4, 30, 66, 0.8) 100%);
+            border: 2px solid var(--text-secondary);
+            border-radius: 10px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: grab;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Hover state for item cards */
+        .item-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 4px 20px rgba(90, 159, 212, 0.3);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(90, 159, 212, 0.2) 0%, rgba(27, 41, 81, 0.9) 100%);
+        }
+        
+        /* Card being dragged */
+        .item-card.dragging {
+            opacity: 0.7;
+            transform: rotate(3deg);
+            cursor: grabbing;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(252, 61, 33, 0.4);
+            border-color: var(--accent-primary);
+        }
+        
+        /* Drop target highlighting */
+        .item-card.drag-over {
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, rgba(252, 61, 33, 0.2) 0%, rgba(27, 41, 81, 0.9) 100%);
+        }
+        
+        /* Ranking Number Badge */
+        .rank-number {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(252, 61, 33, 0.3);
+        }
+        
+        /* Item Content Area */
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        
+        .item-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 0;
+        }
+        
+        /* Drag Handle */
+        .drag-handle {
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: grab;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+        
+        .drag-handle:hover {
+            color: var(--primary-light);
+            background: rgba(90, 159, 212, 0.1);
+            opacity: 1;
+        }
+        
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* =================================================================
+           CONTROL BUTTONS
+           ================================================================= */
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            color: var(--text-primary);
+            padding: 15px 30px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(252, 61, 33, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(252, 61, 33, 0.5);
+            background: linear-gradient(45deg, var(--accent-secondary), var(--accent-primary));
+        }
+        
+        .btn:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* =================================================================
+           RESULTS SECTION
+           ================================================================= */
+        .results {
+            background: linear-gradient(135deg, rgba(4, 30, 66, 0.9) 0%, rgba(27, 41, 81, 0.8) 100%);
+            border: 2px solid var(--primary-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            display: none;
+            box-shadow: 0 5px 20px rgba(90, 159, 212, 0.2);
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Score Display */
+        .score {
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background: rgba(90, 159, 212, 0.3);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Expert Explanation Boxes */
+        .expert-explanation {
+            background: linear-gradient(135deg, rgba(90, 159, 212, 0.15) 0%, rgba(168, 178, 209, 0.1) 100%);
+            border-left: 4px solid var(--primary-light);
+            padding: 18px;
+            margin: 15px 0;
+            font-size: 13px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* =================================================================
+           BRANDING SECTION
+           ================================================================= */
+        .seed13-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 15px;
+            opacity: 0.7;
+        }
+        
+        .seed13-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--text-secondary) 0%, var(--primary-light) 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--primary-dark);
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid var(--primary-light);
+            flex-shrink: 0;
+        }
+        
+        .seed13-text {
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* =================================================================
+           RESPONSIVE DESIGN
+           ================================================================= */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 24px;
+            }
+            
+            .game-content {
+                padding: 15px;
+            }
+            
+            .item-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .rank-number {
+                margin-bottom: 10px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ============================================================
+             HEADER SECTION - Customize title, authority, and subtitle
+             ============================================================ -->
+        <div class="header">
+            <div class="authority-logo">{{AUTHORITY_NAME}}</div>
+            <div class="title">{{GAME_TITLE}}</div>
+            <div class="subtitle">{{GAME_SUBTITLE}}</div>
+        </div>
+        
+        <div class="game-content">
+            <!-- ========================================================
+                 SCENARIO DESCRIPTION - Emergency situation details
+                 ======================================================== -->
+            <div class="scenario-box">
+                <div class="scenario-title">{{EMERGENCY_TITLE}}</div>
+                <div class="scenario-text">
+                    {{EMERGENCY_SCENARIO_TEXT}}
+                </div>
+            </div>
+            
+            <!-- ========================================================
+                 INSTRUCTIONS - How to play and what to consider
+                 ======================================================== -->
+            <div class="instructions">
+                <strong>{{INSTRUCTIONS_TITLE}}:</strong><br>
+                {{INSTRUCTIONS_TEXT}}
+            </div>
+            
+            <!-- ========================================================
+                 DRAG INSTRUCTIONS - How to use the interface
+                 ======================================================== -->
+            <div class="drag-instructions">
+                <strong>{{DRAG_ICON}} DRAG &amp; DROP:</strong> {{DRAG_INSTRUCTIONS_TEXT}}
+            </div>
+            
+            <!-- ========================================================
+                 PROGRESS INDICATOR - Shows completion status
+                 ======================================================== -->
+            <div class="progress-indicator" id="progressText">
+                {{PROGRESS_TEXT}}
+            </div>
+            
+            <!-- ========================================================
+                 RANKING AREA - Where survival items are displayed
+                 ======================================================== -->
+            <div class="ranking-area" id="rankingArea">
+                <!-- Items populated by JavaScript -->
+            </div>
+            
+            <!-- ========================================================
+                 CONTROL BUTTONS - Main game actions
+                 ======================================================== -->
+            <div class="controls">
+                <button class="btn" onclick="checkRankings()" id="checkBtn">
+                    {{ASSESSMENT_BUTTON_TEXT}}
+                </button>
+                <button class="btn" onclick="resetGame()">{{RESET_BUTTON_TEXT}}</button>
+            </div>
+            
+            <!-- ========================================================
+                 BRANDING - Company identification
+                 ======================================================== -->
+            <div class="seed13-branding">
+                <div class="seed13-logo">
+                    {{COMPANY_LOGO}}<br>
+                    <small>Logo</small>
+                </div>
+                <div class="seed13-text">{{COMPANY_TAGLINE}}</div>
+            </div>
+            
+            <!-- ========================================================
+                 RESULTS SECTION - Populated by JavaScript after scoring
+                 ======================================================== -->
+            <div class="results" id="results">
+                <!-- Results populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================================================================
+           SCENARIO CONFIGURATION OBJECT
+           Customize this object for each survival scenario
+           ================================================================ */
+        const SCENARIO_CONFIG = {
+            // Game Identity
+            title: "{{GAME_TITLE}}",
+            
+            // Expert Authority Information
+            expert_source: "{{EXPERT_ORGANIZATION}}", // e.g., "NASA Scientists", "Coast Guard", "Forest Service SAR"
+            expert_title: "{{EXPERT_PROTOCOL_NAME}}", // e.g., "NASA Survival Protocol", "Maritime Rescue Protocol"
+            
+            // Button Labels
+            assessment_button: "{{ASSESSMENT_BUTTON_TEXT}}", // e.g., "NASA Assessment", "Coast Guard Assessment"
+            reset_button: "{{RESET_BUTTON_TEXT}}", // e.g., "Reset Mission", "Reset Scenario"
+            
+            // Scoring Thresholds (customize based on scenario difficulty)
+            scoring: {
+                excellent_threshold: 15,    // Score <= 15 = Excellent
+                good_threshold: 25,         // Score <= 25 = Good  
+                fair_threshold: 35,         // Score <= 35 = Fair
+                // Score > 35 = Poor
+            },
+            
+            // Assessment Messages
+            assessments: {
+                excellent: "EXCELLENT - {{EXPERT_READY_MESSAGE}}", // e.g., "NASA Astronaut Material!"
+                good: "GOOD - You'd likely survive!",
+                fair: "FAIR - Risky but possible", 
+                poor: "POOR - Survival unlikely"
+            },
+            
+            // Colors for assessment results
+            colors: {
+                excellent: "#10B981",   // Green
+                good: "#84CC16",        // Light green
+                fair: "#F59E0B",        // Orange
+                poor: "#EF4444"         // Red
+            },
+            
+            // Key survival principles for this scenario (displayed in results)
+            expert_priorities: [
+                "{{PRIORITY_1}}", // e.g., "Oxygen #1 - Essential for survival at altitude"
+                "{{PRIORITY_2}}", // e.g., "Shelter #2 - Hypothermia prevention critical"
+                "{{PRIORITY_3}}", // e.g., "Signaling #3 - Rescue location essential"
+                "{{PRIORITY_4}}", // e.g., "Water #4 - Dehydration prevention"
+                "{{PRIORITY_5}}"  // e.g., "Navigation #10 - Stay put, don't wander"
+            ]
+        };
+
+        /* ================================================================
+           SURVIVAL ITEMS DATA STRUCTURE
+           Define the 10 survival items for ranking
+           ================================================================ */
+        const items = [
+            {
+                id: 'item_1',                    // Unique identifier
+                name: "{{ITEM_1_NAME}}",         // Display name
+                description: "{{ITEM_1_DESC}}", // Brief description
+                expertRank: 1,                   // Expert ranking (1-10)
+                explanation: "{{ITEM_1_EXPLANATION}}" // Why experts ranked it here
+            },
+            {
+                id: 'item_2',
+                name: "{{ITEM_2_NAME}}",
+                description: "{{ITEM_2_DESC}}",
+                expertRank: 2,
+                explanation: "{{ITEM_2_EXPLANATION}}"
+            },
+            {
+                id: 'item_3',
+                name: "{{ITEM_3_NAME}}",
+                description: "{{ITEM_3_DESC}}",
+                expertRank: 3,
+                explanation: "{{ITEM_3_EXPLANATION}}"
+            },
+            {
+                id: 'item_4',
+                name: "{{ITEM_4_NAME}}",
+                description: "{{ITEM_4_DESC}}",
+                expertRank: 4,
+                explanation: "{{ITEM_4_EXPLANATION}}"
+            },
+            {
+                id: 'item_5',
+                name: "{{ITEM_5_NAME}}",
+                description: "{{ITEM_5_DESC}}",
+                expertRank: 5,
+                explanation: "{{ITEM_5_EXPLANATION}}"
+            },
+            {
+                id: 'item_6',
+                name: "{{ITEM_6_NAME}}",
+                description: "{{ITEM_6_DESC}}",
+                expertRank: 6,
+                explanation: "{{ITEM_6_EXPLANATION}}"
+            },
+            {
+                id: 'item_7',
+                name: "{{ITEM_7_NAME}}",
+                description: "{{ITEM_7_DESC}}",
+                expertRank: 7,
+                explanation: "{{ITEM_7_EXPLANATION}}"
+            },
+            {
+                id: 'item_8',
+                name: "{{ITEM_8_NAME}}",
+                description: "{{ITEM_8_DESC}}",
+                expertRank: 8,
+                explanation: "{{ITEM_8_EXPLANATION}}"
+            },
+            {
+                id: 'item_9',
+                name: "{{ITEM_9_NAME}}",
+                description: "{{ITEM_9_DESC}}",
+                expertRank: 9,
+                explanation: "{{ITEM_9_EXPLANATION}}"
+            },
+            {
+                id: 'item_10',
+                name: "{{ITEM_10_NAME}}",
+                description: "{{ITEM_10_DESC}}",
+                expertRank: 10,
+                explanation: "{{ITEM_10_EXPLANATION}}"
+            }
+        ];
+
+        /* ================================================================
+           GAME STATE VARIABLES
+           ================================================================ */
+        let currentOrder = [];      // Current order of items as arranged by user
+        let draggedElement = null;  // Element currently being dragged
+
+        /* ================================================================
+           CORE GAME FUNCTIONS
+           ================================================================ */
+        
+        /**
+         * Initialize the game - shuffle items and render initial state
+         */
+        function initGame() {
+            // Shuffle items randomly for initial display
+            currentOrder = [...items].sort(() => Math.random() - 0.5);
+            renderItems();
+        }
+
+        /**
+         * Render all items in the ranking area
+         * Updates the DOM with current item order and rankings
+         */
+        function renderItems() {
+            const rankingArea = document.getElementById('rankingArea');
+            rankingArea.innerHTML = '';
+            
+            currentOrder.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.draggable = true;
+                card.dataset.itemId = item.id;
+                
+                card.innerHTML = `
+                    <div class="rank-number">${index + 1}</div>
+                    <div class="item-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+                    </div>
+                    <div class="drag-handle">⋮⋮</div>
+                `;
+                
+                // Attach all drag event listeners
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('drop', handleDrop);
+                card.addEventListener('dragenter', handleDragEnter);
+                card.addEventListener('dragleave', handleDragLeave);
+                
+                rankingArea.appendChild(card);
+            });
+        }
+
+        /* ================================================================
+           DRAG AND DROP EVENT HANDLERS
+           ================================================================ */
+        
+        /**
+         * Handle drag start - initialize drag operation
+         */
+        function handleDragStart(e) {
+            draggedElement = e.target;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+        }
+
+        /**
+         * Handle drag end - cleanup after drag operation
+         */
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            draggedElement = null;
+            
+            // Remove all drag-over visual feedback
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+        }
+
+        /**
+         * Handle drag over - allow drop operation
+         */
+        function handleDragOver(e) {
+            if (e.preventDefault) e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        /**
+         * Handle drag enter - visual feedback when entering drop zone
+         */
+        function handleDragEnter(e) {
+            if (e.target.closest('.item-card') && e.target.closest('.item-card') !== draggedElement) {
+                e.target.closest('.item-card').classList.add('drag-over');
+            }
+        }
+
+        /**
+         * Handle drag leave - remove visual feedback when leaving drop zone
+         */
+        function handleDragLeave(e) {
+            if (e.target.closest('.item-card')) {
+                e.target.closest('.item-card').classList.remove('drag-over');
+            }
+        }
+
+        /**
+         * Handle drop - reorder items when dropped on new position
+         */
+        function handleDrop(e) {
+            if (e.stopPropagation) e.stopPropagation();
+
+            const dropTarget = e.target.closest('.item-card');
+            if (dropTarget && draggedElement && dropTarget !== draggedElement) {
+                const draggedId = draggedElement.dataset.itemId;
+                const dropTargetId = dropTarget.dataset.itemId;
+                
+                // Find positions in current order
+                const draggedIndex = currentOrder.findIndex(item => item.id === draggedId);
+                const dropTargetIndex = currentOrder.findIndex(item => item.id === dropTargetId);
+                
+                // Reorder the items array
+                const draggedItem = currentOrder.splice(draggedIndex, 1)[0];
+                currentOrder.splice(dropTargetIndex, 0, draggedItem);
+                
+                // Re-render with new order
+                renderItems();
+            }
+            return false;
+        }
+
+        /* ================================================================
+           SCORING AND RESULTS FUNCTIONS
+           ================================================================ */
+        
+        /**
+         * Calculate score and display results
+         * Compares user rankings with expert rankings
+         */
+        function checkRankings() {
+            let totalScore = 0;
+            let results = '';
+            
+            // Calculate total score (sum of absolute differences)
+            currentOrder.forEach((item, index) => {
+                const userRank = index + 1;
+                const expertRank = item.expertRank;
+                const difference = Math.abs(userRank - expertRank);
+                totalScore += difference;
+            });
+
+            // Determine survival assessment based on score
+            let assessment = '';
+            let assessmentColor = '';
+            
+            if (totalScore <= SCENARIO_CONFIG.scoring.excellent_threshold) {
+                assessment = SCENARIO_CONFIG.assessments.excellent;
+                assessmentColor = SCENARIO_CONFIG.colors.excellent;
+            } else if (totalScore <= SCENARIO_CONFIG.scoring.good_threshold) {
+                assessment = SCENARIO_CONFIG.assessments.good;
+                assessmentColor = SCENARIO_CONFIG.colors.good;
+            } else if (totalScore <= SCENARIO_CONFIG.scoring.fair_threshold) {
+                assessment = SCENARIO_CONFIG.assessments.fair;
+                assessmentColor = SCENARIO_CONFIG.colors.fair;
+            } else {
+                assessment = SCENARIO_CONFIG.assessments.poor;
+                assessmentColor = SCENARIO_CONFIG.colors.poor;
+            }
+
+            // Build results HTML
+            results += `
+                <div class="score">
+                    <div>SURVIVAL ASSESSMENT SCORE: ${totalScore}</div>
+                    <div style="color: ${assessmentColor}; margin-top: 10px;">${assessment}</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-top: 10px;">
+                        (Lower scores indicate better survival chances)
+                    </div>
+                </div>
+                
+                <div class="expert-explanation">
+                    <strong>${SCENARIO_CONFIG.expert_title}:</strong> Your score reflects how well your priorities match ${SCENARIO_CONFIG.expert_source} survival experts. 
+                    Lower scores indicate better alignment with proven survival strategies and higher likelihood of rescue.
+                </div>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Your Rank</th>
+                            <th>Expert Rank</th>
+                            <th>Difference</th>
+                            <th>${SCENARIO_CONFIG.expert_source} Reasoning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            // Sort items by expert ranking for display
+            const sortedItems = [...items].sort((a, b) => a.expertRank - b.expertRank);
+            
+            // Add each item to comparison table
+            sortedItems.forEach(item => {
+                const userRank = currentOrder.findIndex(i => i.id === item.id) + 1;
+                const expertRank = item.expertRank;
+                const difference = Math.abs(userRank - expertRank);
+                
+                // Color code the difference based on accuracy
+                let diffColor = SCENARIO_CONFIG.colors.excellent; // Perfect match
+                if (difference > 0 && difference <= 2) {
+                    diffColor = SCENARIO_CONFIG.colors.fair; // Close
+                } else if (difference > 2) {
+                    diffColor = SCENARIO_CONFIG.colors.poor; // Far off
+                }
+                
+                results += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td style="text-align: center;">${userRank}</td>
+                        <td style="text-align: center; color: var(--text-secondary);">${expertRank}</td>
+                        <td style="text-align: center; color: ${diffColor};">+${difference}</td>
+                        <td style="font-size: 11px;">${item.explanation}</td>
+                    </tr>
+                `;
+            });
+
+            // Close table and add expert priorities summary
+            results += `
+                    </tbody>
+                </table>
+                
+                <div class="expert-explanation">
+                    <strong>Key Survival Priorities:</strong><br>
+                    ${SCENARIO_CONFIG.expert_priorities.map(priority => `• <strong>${priority}</strong>`).join('<br>')}
+                </div>
+            `;
+
+            // Display results with animation
+            document.getElementById('results').innerHTML = results;
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * Reset game to initial state
+         * Clears results and reshuffles items
+         */
+        function resetGame() {
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('results').innerHTML = '';
+            initGame();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ================================================================
+           GAME INITIALIZATION
+           ================================================================ */
+        
+        // Start the game when page loads
+        initGame();
+    </script>
+</body>
+</html>
+
+<!-- ================================================================
+     CUSTOMIZATION GUIDE
+     ================================================================
+     
+     To create a new survival scenario game, find and replace all
+     {{PLACEHOLDER}} values with scenario-specific content:
+     
+     HTML PLACEHOLDERS TO REPLACE:
+     ==============================
+     {{GAME_TITLE}} - "Moon Survival Mission", "Shipwreck Survival", etc.
+     {{AUTHORITY_NAME}} - "NASA", "COAST GUARD", "FOREST SERVICE", etc.
+     {{GAME_SUBTITLE}} - Descriptive subtitle about the training
+     {{SCENARIO_LABEL}} - "EMERGENCY SITUATION", "MISSION BRIEFING", etc.
+     {{EMERGENCY_TITLE}} - "MAYDAY! MAYDAY!", "AIRCRAFT DOWN!", etc.
+     {{EMERGENCY_SCENARIO_TEXT}} - Full scenario description (3-4 paragraphs)
+     {{INSTRUCTIONS_LABEL}} - "SURVIVAL PROTOCOL", "RESCUE PROTOCOL", etc.
+     {{INSTRUCTIONS_TITLE}} - "MISSION PARAMETERS", "SURVIVAL PROTOCOL", etc.
+     {{INSTRUCTIONS_TEXT}} - Instructions on what to consider when ranking
+     {{DRAG_ICON}} - "🌙", "🌊", "🏔️", etc. (emoji for theme)
+     {{DRAG_INSTRUCTIONS_TEXT}} - Encouragement text for drag interface
+     {{PROGRESS_TEXT}} - Text shown while user arranges items
+     {{ASSESSMENT_BUTTON_TEXT}} - "NASA Assessment", "Coast Guard Assessment"
+     {{RESET_BUTTON_TEXT}} - "Reset Mission", "Reset Scenario"
+     {{COMPANY_LOGO}} - "Seed 13", etc.
+     {{COMPANY_TAGLINE}} - "Survival Decision Series", etc.
+     
+     JAVASCRIPT CONFIG PLACEHOLDERS:
+     ==============================
+     {{EXPERT_ORGANIZATION}} - "NASA Scientists", "Coast Guard Experts"
+     {{EXPERT_PROTOCOL_NAME}} - "NASA Survival Protocol", "Maritime Rescue"
+     {{EXPERT_READY_MESSAGE}} - "NASA Astronaut Material!", "Coast Guard Ready!"
+     {{PRIORITY_1}} through {{PRIORITY_5}} - Key survival principles
+     
+     ITEM DATA PLACEHOLDERS (10 items total):
+     =======================================
+     {{ITEM_X_NAME}} - Name of survival item
+     {{ITEM_X_DESC}} - Brief description of item
+     {{ITEM_X_EXPLANATION}} - Expert reasoning for ranking
+     
+     CSS CUSTOMIZATION:
+     ==================
+     Modify the :root CSS variables to change colors:
+     --primary-dark, --primary-medium, --primary-light (background colors)
+     --accent-primary, --accent-secondary (button/accent colors)
+     --text-primary, --text-secondary (text colors)
+     
+     EXAMPLE SCENARIOS TO IMPLEMENT:
+     ==============================
+     1. Moon Survival (NASA theme - blues/reds)
+     2. Shipwreck (Coast Guard theme - ocean blues/orange)
+     3. High Altitude Crash (Forest Service - greens/orange)
+     4. Arctic Survival (Research Station - whites/blues)
+     5. Jungle Crash (Military - greens/browns)
+     6. Mine Collapse (Safety - grays/yellows)
+     7. Deep Sea Emergency (Commercial diving - deep blues)
+     8. Asteroid Mining (Space - blacks/blues)
+     
+     SCORING CUSTOMIZATION:
+     =====================
+     Adjust scoring.excellent_threshold, good_threshold, fair_threshold
+     based on scenario difficulty and expert data quality.
+     
+     Typical ranges:
+     - NASA/Coast Guard (well-researched): 15/25/35
+     - Military/Forest Service: 18/28/38
+     - Experimental scenarios: 20/30/40
+     
+     ================================================================ -->
