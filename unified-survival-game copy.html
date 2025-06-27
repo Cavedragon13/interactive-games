@@ -323,6 +323,45 @@
             font-size: 18px;
             flex-shrink: 0;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .rank-number:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .rank-input {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: var(--primary-dark);
+            border: 2px solid var(--accent-primary);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 50%;
+            outline: none;
+            display: none;
+        }
+        
+        .rank-input:focus {
+            border-color: var(--accent-secondary);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+        
+        .rank-number.editing .rank-display {
+            display: none;
+        }
+        
+        .rank-number.editing .rank-input {
+            display: block;
         }
         
         .item-content {
@@ -363,9 +402,23 @@
             cursor: grabbing;
         }
         
-        /* =================================================================
-           CONTROL BUTTONS
-           ================================================================= */
+        /* Keyboard navigation indicator */
+        .keyboard-hint {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin: 10px 0;
+            opacity: 0.8;
+        }
+        
+        .keyboard-hint kbd {
+            background: var(--primary-medium);
+            border: 1px solid var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 0 2px;
+        }
         .controls {
             text-align: center;
             margin: 30px 0;
@@ -566,216 +619,6 @@
                 font-size: 14px;
             }
         }
-        
-        /* =================================================================
-           TIMER AND DIFFICULTY STYLES
-           ================================================================= */
-        .difficulty-selection {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid var(--accent-primary);
-        }
-
-        .difficulty-selection h4 {
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .difficulty-selection button {
-            background: var(--primary-medium);
-            border: 2px solid var(--accent-primary);
-            color: var(--text-primary);
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .difficulty-selection button:hover {
-            background: var(--primary-light);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .difficulty-selection button.active {
-            background: var(--accent-primary);
-            color: white;
-            box-shadow: 0 0 15px var(--accent-primary);
-        }
-
-        .timer-display {
-            font-family: 'Inter', monospace;
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--accent-primary);
-            text-align: center;
-            margin: 20px 0;
-            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid var(--accent-primary);
-        }
-
-        /* =================================================================
-           HIGH SCORE STYLES
-           ================================================================= */
-        .high-scores {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
-            border: 2px solid var(--accent-primary);
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            display: none;
-        }
-
-        .high-scores.show {
-            display: block;
-        }
-
-        .high-scores h3 {
-            text-align: center;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-family: 'Inter', sans-serif;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .high-scores ol {
-            list-style: none;
-            padding: 0;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .high-scores li {
-            font-family: 'Inter', monospace;
-            font-size: 18px;
-            color: var(--text-secondary);
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .high-scores li:last-child {
-            border-bottom: none;
-        }
-
-        .high-scores li span:first-child {
-            color: var(--accent-primary);
-            font-weight: bold;
-        }
-
-        .high-scores li span:last-child {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        /* =================================================================
-           INITIALS MODAL STYLES
-           ================================================================= */
-        .initials-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            display: none;
-        }
-
-        .initials-modal-content {
-            background: var(--primary-medium);
-            border: 3px solid var(--accent-primary);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 0 30px var(--accent-primary);
-            max-width: 400px;
-        }
-
-        .initials-modal-content h4 {
-            color: var(--text-primary);
-            font-size: 24px;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        .initials-modal-content input {
-            width: 120px;
-            padding: 15px;
-            font-size: 24px;
-            text-align: center;
-            text-transform: uppercase;
-            background: var(--primary-dark);
-            border: 2px solid var(--accent-primary);
-            color: var(--text-primary);
-            border-radius: 8px;
-            margin-bottom: 25px;
-            font-family: 'Inter', monospace;
-            font-weight: 600;
-        }
-
-        .initials-modal-content input:focus {
-            outline: none;
-            box-shadow: 0 0 15px var(--accent-primary);
-        }
-
-        .initials-modal-content button {
-            background: var(--accent-primary);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .initials-modal-content button:hover {
-            background: var(--accent-secondary);
-            box-shadow: 0 0 15px var(--accent-primary);
-        }
-
-        /* =================================================================
-           MOBILE RESPONSIVE FOR TIMER
-           ================================================================= */
-        @media (max-width: 768px) {
-            .difficulty-selection button {
-                display: block;
-                width: 80%;
-                margin: 10px auto;
-            }
-            
-            .timer-display {
-                font-size: 36px;
-                padding: 10px;
-            }
-            
-            .high-scores {
-                padding: 15px;
-            }
-            
-            .initials-modal-content {
-                padding: 25px;
-                margin: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -825,20 +668,13 @@
                 <span id="instructionsText"></span>
             </div>
             
-            <!-- Timer and Difficulty Selection -->
-            <div class="difficulty-selection">
-                <h4>Game Mode</h4>
-                <button id="difficultyUntimed" class="active">Untimed</button>
-                <button id="difficulty1min">1 Minute</button>
-                <button id="difficulty3min">3 Minutes</button>
-                <button id="difficulty5min">5 Minutes</button>
-            </div>
-
-            <div class="timer-display" id="timerDisplay">00:00</div>
-            
             <div class="drag-instructions">
                 <span class="drag-icon" id="dragIcon"></span>
                 <strong>DRAG &amp; DROP:</strong> <span id="dragInstructionsText"></span>
+            </div>
+            
+            <div class="keyboard-hint">
+                <strong>TIP:</strong> Click any number to type a new position <kbd>1</kbd>-<kbd>10</kbd> or use drag & drop
             </div>
             
             <div class="progress-indicator" id="progressText"></div>
@@ -856,21 +692,6 @@
             </div>
             
             <div class="results" id="results"></div>
-            
-            <!-- High Scores Section -->
-            <div class="high-scores" id="highScoresContainer">
-                <h3 id="highScoreTitle">Best Times</h3>
-                <ol id="highScoreList"></ol>
-            </div>
-        </div>
-    </div>
-
-    <!-- Initials Modal -->
-    <div class="initials-modal" id="initialsModal">
-        <div class="initials-modal-content">
-            <h4>Enter Your Initials</h4>
-            <input type="text" id="initialsInput" maxlength="3" pattern="[A-Z]{3}" title="Three uppercase letters" oninput="this.value = this.value.toUpperCase()">
-            <button onclick="submitInitials()">Submit</button>
         </div>
     </div>
 
@@ -1816,176 +1637,70 @@
         let currentOrder = [];
         let draggedElement = null;
 
-        // Timer and High Score Variables
-        let gameMode = 'untimed'; // 'untimed', '1min', '3min', '5min'
-        let timeRemaining = 0; // in milliseconds
-        let timerInterval = null;
-        let gameActive = false;
-        let startTime = 0;
-        
-        // High Score System
-        const HIGH_SCORES_KEY = 'survivalGameHighScores';
-        let highScores = {
-            '1min': [],
-            '3min': [],
-            '5min': []
-        };
-        
-        // DOM Elements for Timer
-        let timerDisplay, initialsModal, initialsInput, highScoresContainer, highScoreList, highScoreTitle;
-
         // ================================================================
         // SCENARIO LOADING FUNCTIONS
         // ================================================================
         function loadScenario(scenarioKey) {
-            try {
-                // Validate input parameters
-                if (!scenarioKey || typeof scenarioKey !== 'string') {
-                    console.error('Invalid scenario key provided:', scenarioKey);
-                    return false;
-                }
-                
-                if (!SCENARIOS[scenarioKey]) {
-                    console.error('Scenario not found:', scenarioKey);
-                    return false;
-                }
-                
-                // Validate scenario data structure
-                const scenario = SCENARIOS[scenarioKey];
-                if (!scenario.theme || !scenario.content || !scenario.items) {
-                    console.error('Incomplete scenario data for:', scenarioKey);
-                    return false;
-                }
-                
-                // Hide welcome screen safely
-                const welcomeScreen = document.getElementById('welcomeScreen');
-                if (welcomeScreen) {
-                    welcomeScreen.style.display = 'none';
-                }
-                
-                // Load scenario data
-                currentScenario = scenario;
-                
-                // Apply theme colors with error handling
-                if (!applyTheme(currentScenario.theme)) {
-                    console.warn('Theme application failed for scenario:', scenarioKey);
-                }
-                
-                // Update UI content with error handling
-                if (!updateUIContent(currentScenario.content)) {
-                    console.warn('UI content update failed for scenario:', scenarioKey);
-                }
-                
-                // Show game interface with animation
-                setTimeout(() => {
-                    const gameHeader = document.getElementById('gameHeader');
-                    const gameContent = document.getElementById('gameContent');
-                    
-                    if (gameHeader) gameHeader.classList.add('show');
-                    if (gameContent) gameContent.classList.add('show');
-                }, 100);
-                
-                // Initialize game
-                initGame();
-                return true;
-                
-            } catch (error) {
-                console.error('Error loading scenario:', error);
-                // Graceful degradation - show error message to user
-                const welcomeScreen = document.getElementById('welcomeScreen');
-                if (welcomeScreen) {
-                    welcomeScreen.innerHTML = '<h2>Error loading scenario. Please refresh the page.</h2>';
-                }
-                return false;
+            if (!scenarioKey || !SCENARIOS[scenarioKey]) {
+                return;
             }
+            
+            // Hide welcome screen
+            document.getElementById('welcomeScreen').style.display = 'none';
+            
+            // Load scenario data
+            currentScenario = SCENARIOS[scenarioKey];
+            
+            // Apply theme colors
+            applyTheme(currentScenario.theme);
+            
+            // Update UI content
+            updateUIContent(currentScenario.content);
+            
+            // Show game interface with animation
+            setTimeout(() => {
+                document.getElementById('gameHeader').classList.add('show');
+                document.getElementById('gameContent').classList.add('show');
+            }, 100);
+            
+            // Initialize game
+            initGame();
         }
 
         function applyTheme(theme) {
-            try {
-                if (!theme) {
-                    console.error('No theme data provided');
-                    return false;
-                }
-                
-                const root = document.documentElement;
-                if (!root) {
-                    console.error('Cannot access document root element');
-                    return false;
-                }
-                
-                // Apply theme colors safely
-                const themeProperties = {
-                    '--primary-dark': theme.primaryDark,
-                    '--primary-medium': theme.primaryMedium,
-                    '--primary-light': theme.primaryLight,
-                    '--accent-primary': theme.accentPrimary,
-                    '--accent-secondary': theme.accentSecondary,
-                    '--accent-tertiary': theme.accentTertiary
-                };
-                
-                for (const [property, value] of Object.entries(themeProperties)) {
-                    if (value) {
-                        root.style.setProperty(property, value);
-                    }
-                }
-                
-                return true;
-            } catch (error) {
-                console.error('Error applying theme:', error);
-                return false;
-            }
+            const root = document.documentElement;
+            root.style.setProperty('--primary-dark', theme.primaryDark);
+            root.style.setProperty('--primary-medium', theme.primaryMedium);
+            root.style.setProperty('--primary-light', theme.primaryLight);
+            root.style.setProperty('--accent-primary', theme.accentPrimary);
+            root.style.setProperty('--accent-secondary', theme.accentSecondary);
+            root.style.setProperty('--accent-tertiary', theme.accentTertiary);
         }
 
         function updateUIContent(content) {
-            try {
-                if (!content) {
-                    console.error('No content data provided');
-                    return false;
-                }
-                
-                // Define elements to update with their content properties
-                const updates = [
-                    { id: 'authorityLogo', content: content.authorityName, method: 'textContent' },
-                    { id: 'gameTitle', content: content.gameTitle, method: 'textContent' },
-                    { id: 'gameSubtitle', content: content.gameSubtitle, method: 'textContent' },
-                    { id: 'scenarioTitle', content: content.emergencyTitle, method: 'textContent' },
-                    { id: 'scenarioText', content: content.emergencyScenario, method: 'textContent' },
-                    { id: 'instructionsTitle', content: content.instructionsTitle, method: 'textContent' },
-                    { id: 'instructionsText', content: content.instructionsText, method: 'textContent' },
-                    { id: 'dragIcon', content: content.dragIcon, method: 'textContent' },
-                    { id: 'dragInstructionsText', content: content.dragInstructionsText, method: 'textContent' },
-                    { id: 'progressText', content: content.progressText, method: 'textContent' },
-                    { id: 'checkBtn', content: content.assessmentButton, method: 'textContent' },
-                    { id: 'resetBtn', content: content.resetButton, method: 'textContent' }
-                ];
-                
-                // Apply updates safely
-                for (const update of updates) {
-                    const element = document.getElementById(update.id);
-                    if (element && update.content) {
-                        element[update.method] = update.content;
-                    } else if (!element) {
-                        console.warn(`Element not found: ${update.id}`);
-                    }
-                }
-                
-                // Handle attribute updates separately
-                const scenarioBox = document.getElementById('scenarioBox');
-                if (scenarioBox && content.scenarioLabel) {
-                    scenarioBox.setAttribute('data-label', content.scenarioLabel);
-                }
-                
-                const instructions = document.getElementById('instructions');
-                if (instructions && content.instructionsLabel) {
-                    instructions.setAttribute('data-label', content.instructionsLabel);
-                }
-                
-                return true;
-                
-            } catch (error) {
-                console.error('Error updating UI content:', error);
-                return false;
-            }
+            // Header
+            document.getElementById('authorityLogo').textContent = content.authorityName;
+            document.getElementById('gameTitle').textContent = content.gameTitle;
+            document.getElementById('gameSubtitle').textContent = content.gameSubtitle;
+            
+            // Scenario
+            document.getElementById('scenarioBox').setAttribute('data-label', content.scenarioLabel);
+            document.getElementById('scenarioTitle').textContent = content.emergencyTitle;
+            document.getElementById('scenarioText').textContent = content.emergencyScenario;
+            
+            // Instructions
+            document.getElementById('instructions').setAttribute('data-label', content.instructionsLabel);
+            document.getElementById('instructionsTitle').textContent = content.instructionsTitle;
+            document.getElementById('instructionsText').textContent = content.instructionsText;
+            
+            // Interface
+            document.getElementById('dragIcon').textContent = content.dragIcon;
+            document.getElementById('dragInstructionsText').textContent = content.dragInstructionsText;
+            document.getElementById('progressText').textContent = content.progressText;
+            
+            // Buttons
+            document.getElementById('checkBtn').textContent = content.assessmentButton;
+            document.getElementById('resetBtn').textContent = content.resetButton;
         }
 
         // ================================================================
@@ -2000,9 +1715,6 @@
             // Shuffle items
             currentOrder = [...currentScenario.items].sort(() => Math.random() - 0.5);
             renderItems();
-            
-            // Ensure game is active
-            gameActive = true;
         }
 
         function renderItems() {
@@ -2015,32 +1727,25 @@
                 card.draggable = true;
                 card.dataset.itemId = item.id;
                 
-                // Create elements safely without innerHTML
-                const rankNumber = document.createElement('div');
-                rankNumber.className = 'rank-number';
-                rankNumber.textContent = index + 1;
-                
-                const itemContent = document.createElement('div');
-                itemContent.className = 'item-content';
-                
-                const itemName = document.createElement('div');
-                itemName.className = 'item-name';
-                itemName.textContent = item.name;
-                
-                const itemDescription = document.createElement('div');
-                itemDescription.className = 'item-description';
-                itemDescription.textContent = item.description;
-                
-                const dragHandle = document.createElement('div');
-                dragHandle.className = 'drag-handle';
-                dragHandle.textContent = '⋮⋮';
-                
-                // Assemble the card
-                itemContent.appendChild(itemName);
-                itemContent.appendChild(itemDescription);
-                card.appendChild(rankNumber);
-                card.appendChild(itemContent);
-                card.appendChild(dragHandle);
+                card.innerHTML = `
+                    <div class="rank-number" onclick="startNumberEdit(event, '${item.id}')">
+                        <span class="rank-display">${index + 1}</span>
+                        <input type="number" 
+                               class="rank-input" 
+                               min="1" 
+                               max="10" 
+                               value="${index + 1}"
+                               onclick="event.stopPropagation()"
+                               onblur="finishNumberEdit(event, '${item.id}')"
+                               onkeydown="handleNumberKeydown(event, '${item.id}')"
+                               oninput="validateNumberInput(event)">
+                    </div>
+                    <div class="item-content">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-description">${item.description}</div>
+                    </div>
+                    <div class="drag-handle">⋮⋮</div>
+                `;
                 
                 // Add drag event listeners
                 card.addEventListener('dragstart', handleDragStart);
@@ -2058,10 +1763,6 @@
         // DRAG AND DROP HANDLERS
         // ================================================================
         function handleDragStart(e) {
-            if (!gameActive && gameMode !== 'untimed') {
-                e.preventDefault();
-                return false;
-            }
             draggedElement = e.target;
             e.target.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
@@ -2115,24 +1816,95 @@
         }
 
         // ================================================================
+        // NUMBER INPUT FUNCTIONS
+        // ================================================================
+        function startNumberEdit(event, itemId) {
+            event.stopPropagation();
+            const rankNumber = event.currentTarget;
+            rankNumber.classList.add('editing');
+            const input = rankNumber.querySelector('.rank-input');
+            input.focus();
+            input.select();
+        }
+        
+        function finishNumberEdit(event, itemId) {
+            const input = event.target;
+            const rankNumber = input.parentElement;
+            rankNumber.classList.remove('editing');
+            
+            const newPosition = parseInt(input.value);
+            if (newPosition >= 1 && newPosition <= 10) {
+                moveItemToPosition(itemId, newPosition);
+            } else {
+                // Reset to current position if invalid
+                const currentIndex = currentOrder.findIndex(item => item.id === itemId);
+                input.value = currentIndex + 1;
+            }
+        }
+        
+        function handleNumberKeydown(event, itemId) {
+            if (event.key === 'Enter') {
+                event.target.blur();
+            } else if (event.key === 'Escape') {
+                // Reset to current position and close
+                const currentIndex = currentOrder.findIndex(item => item.id === itemId);
+                event.target.value = currentIndex + 1;
+                event.target.blur();
+            }
+        }
+        
+        function validateNumberInput(event) {
+            const input = event.target;
+            let value = parseInt(input.value);
+            
+            if (value > 10) {
+                input.value = 10;
+            } else if (value < 1 && input.value !== '') {
+                input.value = 1;
+            }
+        }
+        
+        function moveItemToPosition(itemId, newPosition) {
+            // Find the current position of the item
+            const currentIndex = currentOrder.findIndex(item => item.id === itemId);
+            if (currentIndex === -1) return;
+            
+            // Adjust for 0-based index
+            const targetIndex = newPosition - 1;
+            
+            // Don't move if already in position
+            if (currentIndex === targetIndex) return;
+            
+            // Remove item from current position
+            const [movedItem] = currentOrder.splice(currentIndex, 1);
+            
+            // Insert at new position
+            currentOrder.splice(targetIndex, 0, movedItem);
+            
+            // Re-render the list
+            renderItems();
+            
+            // Show a brief highlight on the moved item
+            setTimeout(() => {
+                const movedCard = document.querySelector(`[data-item-id="${itemId}"]`);
+                if (movedCard) {
+                    movedCard.style.transition = 'all 0.3s ease';
+                    movedCard.style.boxShadow = '0 0 20px var(--accent-primary)';
+                    movedCard.style.borderColor = 'var(--accent-primary)';
+                    
+                    setTimeout(() => {
+                        movedCard.style.boxShadow = '';
+                        movedCard.style.borderColor = '';
+                    }, 600);
+                }
+            }, 100);
+        }
+        
+        // ================================================================
         // SCORING AND RESULTS
         // ================================================================
         function checkRankings() {
             if (!currentScenario) return;
-            
-            // Stop timer and record time for timed modes
-            if (gameMode !== 'untimed' && !gameActive) {
-                return; // Game already ended
-            }
-            
-            gameActive = false;
-            stopTimer();
-            
-            let finalTimeMs = 0;
-            if (gameMode !== 'untimed') {
-                const initialTimeMs = getInitialTime(gameMode) * 1000;
-                finalTimeMs = initialTimeMs - timeRemaining;
-            }
             
             let totalScore = 0;
             const config = currentScenario.config;
@@ -2227,246 +1999,18 @@
                 </div>
             `;
 
-            // Add time information for timed modes
-            if (gameMode !== 'untimed') {
-                results += `
-                    <div style="text-align: center; margin: 25px 0; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: 10px; border: 2px solid var(--accent-primary);">
-                        <h3 style="color: var(--accent-primary); margin-bottom: 10px;">⏱️ Time Completed</h3>
-                        <div style="font-size: 24px; font-weight: 700; color: var(--text-primary); font-family: monospace;">
-                            ${formatTime(finalTimeMs, true)}
-                        </div>
-                        <div style="font-size: 14px; color: var(--text-secondary); margin-top: 5px;">
-                            Challenge Mode: ${gameMode.toUpperCase()}
-                        </div>
-                    </div>
-                `;
-            }
-
             // Display results
             document.getElementById('results').innerHTML = results;
             document.getElementById('results').classList.add('show');
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-            
-            // Prompt for high score entry if timed mode
-            if (gameMode !== 'untimed') {
-                setTimeout(() => {
-                    promptForInitials(gameMode, finalTimeMs);
-                }, 1000);
-            }
         }
 
-        // ================================================================
-        // TIMER SYSTEM FUNCTIONS
-        // ================================================================
-        function setDifficulty(mode) {
-            gameMode = mode;
-            
-            // Update button states
-            document.querySelectorAll('.difficulty-selection button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(`difficulty${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
-
-            stopTimer();
-            if (gameMode === 'untimed') {
-                timerDisplay.textContent = '00:00';
-                timerDisplay.style.color = 'var(--text-primary)';
-                gameActive = true;
-                document.getElementById('checkBtn').disabled = false;
-            } else {
-                timeRemaining = getInitialTime(gameMode) * 1000;
-                updateTimerDisplay();
-                gameActive = true;
-                document.getElementById('checkBtn').disabled = false;
-                startTimer();
-            }
-            displayHighScores(gameMode);
-        }
-
-        function getInitialTime(mode) {
-            switch (mode) {
-                case '1min': return 60;
-                case '3min': return 180;
-                case '5min': return 300;
-                default: return 0;
-            }
-        }
-
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            startTime = Date.now();
-            timerInterval = setInterval(() => {
-                if (!gameActive) {
-                    stopTimer();
-                    return;
-                }
-                const elapsed = Date.now() - startTime;
-                const initialTimeMs = getInitialTime(gameMode) * 1000;
-                timeRemaining = initialTimeMs - elapsed;
-
-                if (timeRemaining <= 0) {
-                    timeRemaining = 0;
-                    updateTimerDisplay();
-                    stopTimer();
-                    gameActive = false;
-                    alert("Time's up! Your survival strategy will now be analyzed.");
-                    checkRankings();
-                    document.getElementById('checkBtn').disabled = true;
-                }
-                updateTimerDisplay();
-            }, 100);
-        }
-
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-        }
-
-        function updateTimerDisplay() {
-            timerDisplay.textContent = formatTime(timeRemaining, false);
-            if (timeRemaining <= 10000 && gameMode !== 'untimed') {
-                timerDisplay.style.color = 'var(--danger-color)';
-            } else {
-                timerDisplay.style.color = 'var(--accent-primary)';
-            }
-        }
-
-        function formatTime(ms, isTimeTaken = false) {
-            const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            const milliseconds = Math.floor((ms % 1000) / 100);
-
-            if (isTimeTaken) {
-                return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${milliseconds}`;
-            } else {
-                return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${milliseconds}`;
-            }
-        }
-
-        // ================================================================
-        // HIGH SCORE SYSTEM FUNCTIONS
-        // ================================================================
-        function loadHighScores() {
-            try {
-                const storedScores = localStorage.getItem(HIGH_SCORES_KEY);
-                if (storedScores) {
-                    highScores = JSON.parse(storedScores);
-                }
-            } catch (e) {
-                console.error("Error loading high scores from localStorage:", e);
-                highScores = { '1min': [], '3min': [], '5min': [] };
-            }
-        }
-
-        function saveHighScores() {
-            try {
-                localStorage.setItem(HIGH_SCORES_KEY, JSON.stringify(highScores));
-            } catch (e) {
-                console.error("Error saving high scores to localStorage:", e);
-            }
-        }
-
-        function displayHighScores(mode) {
-            if (!highScoresContainer || !highScoreList || !highScoreTitle) return;
-
-            highScoreTitle.textContent = `Best Times (${mode === 'untimed' ? 'Untimed' : mode.toUpperCase()})`;
-            highScoreList.innerHTML = '';
-
-            if (mode === 'untimed') {
-                highScoresContainer.classList.remove('show');
-                return;
-            }
-
-            const scoresForMode = highScores[mode] || [];
-            scoresForMode.sort((a, b) => a.timeMs - b.timeMs);
-
-            if (scoresForMode.length === 0) {
-                highScoreList.innerHTML = '<li>No scores yet. Be the first!</li>';
-            } else {
-                scoresForMode.slice(0, 10).forEach(score => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span>${score.initials}</span> <span>${formatTime(score.timeMs, true)}</span>`;
-                    highScoreList.appendChild(li);
-                });
-            }
-            highScoresContainer.classList.add('show');
-        }
-
-        function promptForInitials(mode, timeMs) {
-            if (initialsModal && initialsInput) {
-                initialsModal.style.display = 'flex';
-                initialsInput.value = '';
-                initialsInput.focus();
-
-                initialsInput.onkeydown = (e) => {
-                    if (e.key === 'Enter') {
-                        submitInitials();
-                    }
-                };
-                initialsModal.dataset.mode = mode;
-                initialsModal.dataset.timeMs = timeMs;
-            }
-        }
-
-        function submitInitials() {
-            const mode = initialsModal.dataset.mode;
-            const timeMs = parseInt(initialsModal.dataset.timeMs, 10);
-            const initials = initialsInput.value.trim().toUpperCase();
-
-            if (initials.length === 3 && /^[A-Z]{3}$/.test(initials)) {
-                if (!highScores[mode]) {
-                    highScores[mode] = [];
-                }
-                highScores[mode].push({ initials, timeMs });
-                saveHighScores();
-                displayHighScores(mode);
-                initialsModal.style.display = 'none';
-            } else {
-                alert("Please enter exactly three uppercase letters for your initials.");
-            }
-        }
-
-        // ================================================================
-        // ENHANCED GAME FUNCTIONS
-        // ================================================================
         function resetGame() {
             document.getElementById('results').classList.remove('show');
             document.getElementById('results').innerHTML = '';
-            stopTimer();
-            setDifficulty('untimed'); // Reset to untimed mode
             initGame();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // ================================================================
-        // INITIALIZATION
-        // ================================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize DOM elements
-            timerDisplay = document.getElementById('timerDisplay');
-            initialsModal = document.getElementById('initialsModal');
-            initialsInput = document.getElementById('initialsInput');
-            highScoresContainer = document.getElementById('highScoresContainer');
-            highScoreList = document.getElementById('highScoreList');
-            highScoreTitle = document.getElementById('highScoreTitle');
-
-            // Load high scores
-            loadHighScores();
-
-            // Add event listeners for difficulty buttons
-            document.querySelectorAll('.difficulty-selection button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const mode = button.id.replace('difficulty', '').toLowerCase();
-                    setDifficulty(mode);
-                });
-            });
-
-            // Set default mode
-            setDifficulty('untimed');
-        });
     </script>
 </body>
 </html>
