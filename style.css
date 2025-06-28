@@ -1,0 +1,771 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* =================================================================
+   DYNAMIC CSS VARIABLES - Updated by JavaScript per scenario
+   ================================================================= */
+:root {
+    /* DEFAULT THEME - Updated dynamically */
+    --primary-dark: #1a1a1a;
+    --primary-medium: #2a2a2a;
+    --primary-light: #4a4a4a;
+    --accent-primary: #007bff;
+    --accent-secondary: #0056b3;
+    --accent-tertiary: #ffd700;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-light: #e6e6e6;
+    --success-color: #10B981;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+    --info-color: #3B82F6;
+}
+
+/* =================================================================
+   BASE LAYOUT AND TYPOGRAPHY
+   ================================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+    transition: background 0.5s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid var(--accent-primary);
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+
+/* =================================================================
+   GAME SELECTOR
+   ================================================================= */
+.game-selector {
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.selector-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.scenario-select {
+    background: var(--primary-medium);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-primary);
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 300px;
+}
+
+.scenario-select:hover {
+    background: var(--primary-light);
+    border-color: var(--accent-secondary);
+}
+
+.scenario-select option {
+    background: var(--primary-dark);
+    padding: 10px;
+}
+
+/* =================================================================
+   HEADER SECTION
+   ================================================================= */
+.header {
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-dark) 100%);
+    padding: 25px;
+    text-align: center;
+    border-bottom: 3px solid var(--accent-primary);
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.header.show {
+    opacity: 1;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-primary) 100%);
+}
+
+.authority-logo {
+    display: inline-block;
+    background: var(--accent-primary);
+    color: var(--text-primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.title {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* =================================================================
+   MAIN GAME CONTENT AREA
+   ================================================================= */
+.game-content {
+    padding: 30px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.game-content.show {
+    display: block;
+    opacity: 1;
+}
+
+.scenario-box {
+    background: linear-gradient(135deg, rgba(27, 41, 81, 0.8) 0%, rgba(4, 30, 66, 0.6) 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.scenario-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--primary-dark);
+    color: var(--primary-light);
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.scenario-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.scenario-text {
+    font-size: 14px;
+    line-height: 1.8;
+    text-align: justify;
+}
+
+.instructions {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
+    padding: 18px;
+    margin: 20px 0;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+}
+
+.instructions::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background: var(--primary-dark);
+    color: var(--accent-primary);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.drag-instructions {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.1) 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.drag-icon {
+    font-size: 24px;
+    margin-right: 8px;
+}
+
+.progress-indicator {
+    text-align: center;
+    font-size: 15px;
+    margin: 20px 0;
+    color: var(--primary-light);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+/* =================================================================
+   ITEM RANKING INTERFACE
+   ================================================================= */
+.ranking-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 20px 0;
+    min-height: 400px;
+}
+
+.item-card {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);
+    border: 2px solid var(--text-secondary);
+    border-radius: 10px;
+    padding: 18px;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.item-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.item-card.dragging {
+    opacity: 0.7;
+    transform: rotate(3deg);
+    cursor: grabbing;
+    z-index: 1000;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border-color: var(--accent-primary);
+}
+
+.item-card.drag-over {
+    border-color: var(--accent-primary);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.rank-number {
+    background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.item-content {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.item-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+.drag-handle {
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: grab;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+}
+
+.drag-handle:hover {
+    color: var(--primary-light);
+    background: rgba(255, 255, 255, 0.05);
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* =================================================================
+   CONTROL BUTTONS
+   ================================================================= */
+.controls {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.btn {
+    background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+    border: none;
+    color: var(--text-primary);
+    padding: 15px 30px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, var(--accent-secondary), var(--accent-primary));
+}
+
+.btn:disabled {
+    background: #666;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* =================================================================
+   RESULTS SECTION
+   ================================================================= */
+.results {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 25px;
+    display: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.results.show {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.score {
+    font-family: 'Inter', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 20px 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+}
+
+.comparison-table th {
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.comparison-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.expert-explanation {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+    border-left: 4px solid var(--primary-light);
+    padding: 18px;
+    margin: 15px 0;
+    font-size: 13px;
+    border-radius: 0 8px 8px 0;
+}
+
+/* =================================================================
+   BRANDING SECTION
+   ================================================================= */
+.seed13-branding {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    padding: 15px;
+    opacity: 0.7;
+}
+
+.seed13-logo {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--text-secondary) 0%, var(--primary-light) 100%);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: var(--primary-dark);
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid var(--primary-light);
+    flex-shrink: 0;
+}
+
+.seed13-text {
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* =================================================================
+   WELCOME SCREEN
+   ================================================================= */
+.welcome-screen {
+    text-align: center;
+    padding: 60px 30px;
+    color: var(--text-secondary);
+}
+
+.welcome-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.welcome-subtitle {
+    font-size: 18px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.welcome-instruction {
+    font-size: 16px;
+    color: var(--accent-primary);
+    font-weight: 600;
+    margin-top: 30px;
+}
+
+/* =================================================================
+   RESPONSIVE DESIGN
+   ================================================================= */
+@media (max-width: 768px) {
+    .title {
+        font-size: 24px;
+    }
+    
+    .game-content {
+        padding: 15px;
+    }
+    
+    .item-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .rank-number {
+        margin-bottom: 10px;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        margin: 5px;
+    }
+    
+    .scenario-select {
+        min-width: 200px;
+        font-size: 14px;
+    }
+}
+
+/* =================================================================
+   TIMER AND DIFFICULTY STYLES
+   ================================================================= */
+.difficulty-selection {
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 1px solid var(--accent-primary);
+}
+
+.difficulty-selection h4 {
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.difficulty-selection button {
+    background: var(--primary-medium);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.difficulty-selection button:hover {
+    background: var(--primary-light);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.difficulty-selection button.active {
+    background: var(--accent-primary);
+    color: white;
+    box-shadow: 0 0 15px var(--accent-primary);
+}
+
+.timer-display {
+    font-family: 'Inter', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    text-align: center;
+    margin: 20px 0;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid var(--accent-primary);
+}
+
+/* =================================================================
+   HIGH SCORE STYLES
+   ================================================================= */
+.high-scores {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    display: none;
+}
+
+.high-scores.show {
+    display: block;
+}
+
+.high-scores h3 {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.high-scores ol {
+    list-style: none;
+    padding: 0;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.high-scores li {
+    font-family: 'Inter', monospace;
+    font-size: 18px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.high-scores li:last-child {
+    border-bottom: none;
+}
+
+.high-scores li span:first-child {
+    color: var(--accent-primary);
+    font-weight: bold;
+}
+
+.high-scores li span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* =================================================================
+   INITIALS MODAL STYLES
+   ================================================================= */
+.initials-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    display: none;
+}
+
+.initials-modal-content {
+    background: var(--primary-medium);
+    border: 3px solid var(--accent-primary);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 30px var(--accent-primary);
+    max-width: 400px;
+}
+
+.initials-modal-content h4 {
+    color: var(--text-primary);
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.initials-modal-content input {
+    width: 120px;
+    padding: 15px;
+    font-size: 24px;
+    text-align: center;
+    text-transform: uppercase;
+    background: var(--primary-dark);
+    border: 2px solid var(--accent-primary);
+    color: var(--text-primary);
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-family: 'Inter', monospace;
+    font-weight: 600;
+}
+
+.initials-modal-content input:focus {
+    outline: none;
+    box-shadow: 0 0 15px var(--accent-primary);
+}
+
+.initials-modal-content button {
+    background: var(--accent-primary);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.initials-modal-content button:hover {
+    background: var(--accent-secondary);
+    box-shadow: 0 0 15px var(--accent-primary);
+}
+
+/* =================================================================
+   MOBILE RESPONSIVE FOR TIMER
+   ================================================================= */
+@media (max-width: 768px) {
+    .difficulty-selection button {
+        display: block;
+        width: 80%;
+        margin: 10px auto;
+    }
+    
+    .timer-display {
+        font-size: 36px;
+        padding: 10px;
+    }
+    
+    .high-scores {
+        padding: 15px;
+    }
+    
+    .initials-modal-content {
+        padding: 25px;
+        margin: 20px;
+    }
+}
