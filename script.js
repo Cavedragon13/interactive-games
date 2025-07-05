@@ -744,8 +744,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Add event listeners for main game buttons and select
+    document.getElementById('scenarioSelect').addEventListener('change', (e) => {
+        loadScenario(e.target.value);
+    });
+    document.getElementById('checkBtn').addEventListener('click', checkRankings);
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+    // Add event listeners for initials modal
+    document.getElementById('initialsInput').addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+    document.getElementById('submitInitialsBtn').addEventListener('click', submitInitials);
+
     // Load scenarios and then set default mode
-            loadScenarios().then(() => {
-                setDifficulty('untimed');
-            });
-        });
+    loadScenarios().then(() => {
+        setDifficulty('untimed');
+    });
+});

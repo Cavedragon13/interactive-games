@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
     <title>Survival Decision Series - Training Interface</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
         <!-- Game Selector -->
         <div class="game-selector">
             <div class="selector-title">Select Your Survival Training Scenario</div>
-            <select class="scenario-select" id="scenarioSelect" onchange="loadScenario(this.value)">
+            <select class="scenario-select" id="scenarioSelect">
                 <option value="">-- Choose a Scenario --</option>
                 <option value="moon">🌙 Lunar Survival Mission (NASA)</option>
                 <option value="shipwreck">🌊 Shipwreck Survival (Coast Guard)</option>
@@ -75,8 +75,8 @@
             <div class="ranking-area" id="rankingArea"></div>
             
             <div class="controls">
-                <button class="btn" onclick="checkRankings()" id="checkBtn"></button>
-                <button class="btn" onclick="resetGame()" id="resetBtn"></button>
+                <button class="btn" id="checkBtn"></button>
+                <button class="btn" id="resetBtn"></button>
             </div>
             
             <div class="seed13-branding">
@@ -98,8 +98,8 @@
     <div class="initials-modal" id="initialsModal">
         <div class="initials-modal-content">
             <h4>Enter Your Initials</h4>
-            <input type="text" id="initialsInput" maxlength="3" pattern="[A-Z]{3}" title="Three uppercase letters" oninput="this.value = this.value.toUpperCase()">
-            <button onclick="submitInitials()">Submit</button>
+            <input type="text" id="initialsInput" maxlength="3" pattern="[A-Z]{3}" title="Three uppercase letters">
+            <button id="submitInitialsBtn">Submit</button>
         </div>
     </div>
 
