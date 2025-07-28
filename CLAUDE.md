@@ -13,15 +13,17 @@ A collection of HTML5 survival and space-themed games featuring educational cont
 All games are self-contained HTML files requiring no build process:
 
 ```bash
-# Direct browser access
-open nasa-survivor.html
-open selene-lunar-reckoning.html
-open unified-survival-game.html
+# Primary game (unified multi-scenario)
+open survival-decision-series.html
 
-# Local server (recommended)
+# Individual games
+open selene-lunar-reckoning.html
+
+# Local server (recommended for full functionality)
 python3 -m http.server 8000
 # or
 npx http-server -p 8080
+# Then navigate to http://localhost:8000
 ```
 
 ### Template Development
@@ -29,7 +31,23 @@ npx http-server -p 8080
 ```bash
 # Create new game from template
 cp survival-game-template.html new-scenario.html
-# Use survival-game-placeholders.json as reference for customization
+
+# Use placeholders reference for customization
+# Reference: survival-game-placeholders.json contains 200+ placeholders
+
+# Validate scenario data structure
+# Reference: scenarios.json for complete scenario examples
+```
+
+### Testing and Validation
+
+```bash
+# Test games locally
+open http://localhost:8000/survival-decision-series.html
+
+# Check browser console for JavaScript errors
+# Test drag-and-drop functionality across different browsers
+# Verify localStorage persistence for high scores and settings
 ```
 
 ## Architecture
@@ -75,15 +93,26 @@ Reference `survival-game-placeholders.json` for all available placeholders.
 
 ### Multi-Scenario Architecture
 
-Advanced games like `unified-survival-game.html` support multiple complete scenarios:
+The primary game `survival-decision-series.html` supports 8 complete scenarios loaded from `scenarios.json`:
 
 ```javascript
 const SCENARIOS = {
   moon: { theme: {}, content: {}, items: [] },
   shipwreck: { theme: {}, content: {}, items: [] },
-  // 8 scenarios total
+  mountain: { theme: {}, content: {}, items: [] },
+  arctic: { theme: {}, content: {}, items: [] },
+  jungle: { theme: {}, content: {}, items: [] },
+  mine: { theme: {}, content: {}, items: [] },
+  deepsea: { theme: {}, content: {}, items: [] },
+  asteroid: { theme: {}, content: {}, items: [] }
 };
 ```
+
+Each scenario includes:
+- **Theme**: Complete CSS color palette with professional styling
+- **Content**: Authority branding, scenario text, instructions
+- **Items**: 10 survival items with expert rankings (1-10)
+- **Config**: Scoring thresholds and expert explanations
 
 ### Drag and Drop System
 
@@ -155,16 +184,78 @@ Each survival scenario contains exactly 10 items with this structure:
 - Screen reader compatibility
 - Focus management during interactions
 
+## File Structure
+
+```
+interactive-games/
+├── survival-decision-series.html     # PRIMARY: Multi-scenario survival training
+├── selene-lunar-reckoning.html      # Individual lunar scenario (legacy)
+├── survival-game-template.html      # Template for new scenarios
+├── survival-game-placeholders.json  # Template customization guide (200+ placeholders)
+├── scenarios.json                   # Complete scenario data for multi-game
+├── deprecated/                      # Legacy game files
+│   ├── unified-survival-game.html   # Original unified game
+│   ├── survival_game_fixed.html     # Development versions
+│   └── [other deprecated files]
+└── README.md                        # Project documentation
+```
+
+## Data Architecture
+
+### Scenario Data Structure
+
+All scenarios follow this JSON structure in `scenarios.json`:
+
+```json
+{
+  "scenarioId": {
+    "theme": {
+      "primaryDark": "#color",
+      "accentPrimary": "#color"
+    },
+    "content": {
+      "gameTitle": "Title",
+      "authorityName": "Organization",
+      "emergencyScenario": "Detailed scenario text"
+    },
+    "config": {
+      "expertSource": "Authority",
+      "scoringThresholds": { "excellent": 15, "good": 25, "fair": 35 }
+    },
+    "items": [
+      {
+        "id": "unique_id",
+        "name": "Item name",
+        "description": "Brief description",
+        "expertRank": 1,
+        "explanation": "Expert reasoning"
+      }
+    ]
+  }
+}
+```
+
 ## Creating New Games
 
-1. Start with `survival-game-template.html`
-2. Replace all `{{PLACEHOLDER}}` values using find-and-replace
-3. Customize CSS color variables for theme
-4. Define 10 survival items with expert rankings (1-10)
-5. Set scoring thresholds based on expert data difficulty
+### Using the Template System
 
-Required elements:
-- Authority/organization theme (NASA, Coast Guard, etc.)
-- Emergency scenario description
-- 10 survival items with expert validation
-- Appropriate visual theming
+1. **Start with template**: Copy `survival-game-template.html`
+2. **Reference placeholders**: Use `survival-game-placeholders.json` for all 200+ available placeholders
+3. **Replace placeholders**: Use find-and-replace for `{{PLACEHOLDER}}` values
+4. **Customize theme**: Update CSS color variables for visual identity
+5. **Define survival items**: Create exactly 10 items with expert rankings (1-10)
+6. **Set scoring**: Configure thresholds based on expert data complexity
+
+### Adding to Multi-Scenario Game
+
+1. **Edit scenarios.json**: Add new scenario following existing structure
+2. **Test locally**: Verify game loads and functions correctly
+3. **Validate data**: Ensure all required fields are present
+
+### Required Elements for New Scenarios
+
+- **Authority theme**: Professional organization (NASA, Coast Guard, Forest Service, etc.)
+- **Emergency description**: 3-4 paragraph detailed scenario
+- **Expert validation**: 10 items ranked by real experts in field
+- **Scoring thresholds**: Difficulty-appropriate score ranges
+- **Visual theming**: Color palette matching authority branding
