@@ -16,17 +16,17 @@ jobs:
       - name: Install LFTP
         run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Deploy via SFTP with key
+      - name: Test SFTP connection and list public_html
         env:
           LFTP_HOST: 82.197.80.13
           LFTP_PORT: 65002
           LFTP_USER: u760631640
-          LFTP_KEY: ${{ secrets.SFTP_KEY }}
+          LFTP_KEY: ${{ secrets.HOSTINGER_SFTP_KEY }}
         run: |
           echo "$LFTP_KEY" > key.pem
           chmod 600 key.pem
           lftp -e "
             set sftp:connect-program 'ssh -a -x -i key.pem -p $LFTP_PORT';
-            mirror -R --delete --verbose ./ public_html;
+            ls public_html;
             bye
           " -u "$LFTP_USER" sftp://$LFTP_HOST
