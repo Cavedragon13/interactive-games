@@ -1,0 +1,25 @@
+name: Deploy to Hostinger FTP
+
+on:
+  push:
+    branches:
+      - main  # or 'master', whatever your main branch is
+
+jobs:
+  ftp-deploy:
+    name: Deploy via FTP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          protocol: ftp
+          port: 21
+          local-dir: ./  # adjust if your web files are in a subfolder
+          server-dir: public_html/
