@@ -1,25 +1,32 @@
-name: Deploy to Hostinger FTP
+name: SFTP Deploy to Hostinger
 
 on:
   push:
     branches:
-      - main  # or 'master', whatever your main branch is
+      - main
 
 jobs:
-  ftp-deploy:
-    name: Deploy via FTP
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout source
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          protocol: ftp
-          port: 21
-          local-dir: ./  # adjust if your web files are in a subfolder
-          server-dir: public_html/
+      - name: Install LFTP
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Deploy via SFTP with key
+        env:
+          LFTP_HOST: 82.197.80.13
+          LFTP_PORT: 65002
+          LFTP_USER: u760631640
+          LFTP_KEY: ${{ secrets.SFTP_KEY }}
+        run: |
+          echo "$LFTP_KEY" > key.pem
+          chmod 600 key.pem
+          lftp -e "
+            set sftp:connect-program 'ssh -a -x -i key.pem -p $LFTP_PORT';
+            mirror -R --delete --verbose ./ public_html;
+            bye
+          " -u "$LFTP_USER" sftp://$LFTP_HOST
