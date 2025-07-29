@@ -27,10 +27,11 @@ jobs:
           # Add host to known_hosts to avoid fingerprint prompt
           ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
           
-          # Deploy using rsync with SSH
+          # Deploy using rsync with SSH (games to subdirectory)
           rsync -avz --delete \
             -e "ssh -i key.pem -p $SSH_PORT -o StrictHostKeyChecking=no" \
-            ./ $SSH_USER@$SSH_HOST:public_html/
+            --exclude='.git*' --exclude='README.md' --exclude='seed13-*.html' \
+            ./ $SSH_USER@$SSH_HOST:public_html/games/survival/
           
           # Clean up key file
           rm -f key.pem
