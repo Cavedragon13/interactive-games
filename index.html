@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival Training Games - Seed 13 Productions</title>
+    <meta name="description" content="Interactive survival training games based on expert protocols from NASA, Coast Guard, and other professional organizations.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00d4ff, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: #00d4ff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+        }
+
+        .game-card h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .game-card p {
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-link {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #00d4ff, #ff6b9d);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .game-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+        }
+
+        .features h2 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .features-list li {
+            color: #a0a0a0;
+            padding: 0.5rem 0;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            color: #00d4ff;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../../" class="back-link">← Back to Main Site</a>
+        
+        <div class="header">
+            <h1>🎮 Survival Training Games</h1>
+            <p>Test your survival instincts with expert-validated scenarios from NASA, Coast Guard, Forest Service, and other professional rescue organizations.</p>
+        </div>
+
+        <div class="games-grid">
+            <div class="game-card">
+                <h3>🌍 Multi-Scenario Survival Training</h3>
+                <p><strong>8 Complete Scenarios</strong><br>
+                Moon landing, shipwreck, mountain rescue, arctic survival, jungle expedition, mine disaster, deep sea emergency, and asteroid survival.</p>
+                <p><strong>Features:</strong> Professional themes, timer modes, high score tracking, expert-validated survival strategies.</p>
+                <a href="survival-decision-series.html" class="game-link">Play Multi-Scenario Game</a>
+            </div>
+
+            <div class="game-card">
+                <h3>🛠️ Game Development Tools</h3>
+                <p><strong>Survival Game Template</strong><br>
+                Complete template system for creating new survival scenarios with 200+ customizable placeholders.</p>
+                <p><strong>Features:</strong> Drag-and-drop interface, expert scoring system, professional themes, educational content.</p>
+                <a href="survival-game-template.html" class="game-link">View Template</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Game Features</h2>
+            <ul class="features-list">
+                <li>Expert-validated survival strategies from professional organizations</li>
+                <li>Interactive drag-and-drop ranking system</li>
+                <li>Multiple difficulty modes with timer challenges</li>
+                <li>High score tracking and persistence</li>
+                <li>Educational explanations for each survival item</li>
+                <li>Mobile-responsive design for all devices</li>
+                <li>Accessibility features with keyboard navigation</li>
+                <li>Professional themes matching real organization branding</li>
+                <li>Detailed scenario descriptions based on real emergencies</li>
+                <li>Comprehensive scoring system with expert comparison</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
