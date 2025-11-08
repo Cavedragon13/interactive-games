@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gladiator Manager - Game Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =================================================================
+           DYNAMIC CSS VARIABLES - Updated by JavaScript per theme
+           ================================================================= */
+        :root {
+            /* DEFAULT THEME - Updated dynamically */
+            --primary-dark: #1a1a1a;
+            --primary-medium: #2a2a2a;
+            --primary-light: #4a4a4a;
+            --accent-primary: #D4AF37;
+            --accent-secondary: #8B4513;
+            --accent-tertiary: #8B0000;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-light: #e6e6e6;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
+            --health-bar: #10B981;
+            --damage-bar: #EF4444;
+        }
+
+        /* =================================================================
+           BASE LAYOUT AND TYPOGRAPHY
+           ================================================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.85);
+            border: 3px solid var(--accent-primary);
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-primary);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .game-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            text-align: center;
+            border-top: 2px solid var(--accent-primary);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* =================================================================
+           BUTTONS AND CONTROLS
+           ================================================================= */
+        button {
+            background: var(--accent-primary);
+            color: var(--primary-dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: var(--primary-medium);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-primary);
+        }
+
+        .button-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .button-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* =================================================================
+           SCREENS (Hidden by default)
+           ================================================================= */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =================================================================
+           MAIN MENU SCREEN
+           ================================================================= */
+        .main-menu {
+            text-align: center;
+        }
+
+        .main-menu h2 {
+            font-size: 2rem;
+            margin: 30px 0 20px;
+            color: var(--accent-primary);
+        }
+
+        .main-menu p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* =================================================================
+           GAME STATUS BAR
+           ================================================================= */
+        .status-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-secondary);
+            border-radius: 8px;
+        }
+
+        .status-item {
+            text-align: center;
+        }
+
+        .status-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* =================================================================
+           RESPONSIVE
+           ================================================================= */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+                border-width: 2px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .game-content {
+                padding: 15px;
+            }
+
+            .status-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* =================================================================
+           LOADING STATE
+           ================================================================= */
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-light);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ GLADIATOR MANAGER ⚔️</h1>
+            <p>Build Your Stable. Dominate the Arenas.</p>
+        </div>
+
+        <div class="game-content">
+            <!-- Main Menu Screen -->
+            <div id="mainMenuScreen" class="screen active main-menu">
+                <h2>Welcome to the Arenas</h2>
+                <p>Manage your team of fighters, train them, and lead them to victory in the greatest arenas of the realm. From humble countryside circuits to the prestigious Imperial Arena, test your strategy and leadership.</p>
+
+                <div class="menu-buttons">
+                    <button onclick="UI.newGame()">New Game</button>
+                    <button class="button-secondary" onclick="UI.showLoadScreen()">Load Game</button>
+                    <button class="button-secondary" onclick="UI.showSettings()">Settings</button>
+                </div>
+            </div>
+
+            <!-- Game Screen (placeholder) -->
+            <div id="gameScreen" class="screen">
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-label">Team</div>
+                        <div class="status-value" id="teamName">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Level</div>
+                        <div class="status-value" id="currentLevel">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Season</div>
+                        <div class="status-value" id="currentSeason">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Funds</div>
+                        <div class="status-value" id="funds">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Roster</div>
+                        <div class="status-value" id="rosterSize">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Reputation</div>
+                        <div class="status-value" id="reputation">-</div>
+                    </div>
+                </div>
+
+                <h2>Game Interface</h2>
+                <p>Core gameplay systems are being developed:</p>
+                <ul style="margin: 20px 0; color: var(--text-secondary);">
+                    <li>✓ State management system</li>
+                    <li>✓ Event bus for system communication</li>
+                    <li>✓ Persistence (save/load)</li>
+                    <li>✓ Configuration loader</li>
+                    <li>⏳ Combat system</li>
+                    <li>⏳ Training system</li>
+                    <li>⏳ Progression system</li>
+                    <li>⏳ UI screens</li>
+                </ul>
+
+                <div style="margin-top: 30px;">
+                    <button onclick="UI.backToMenu()">Back to Menu</button>
+                </div>
+            </div>
+
+            <!-- Loading Screen -->
+            <div id="loadingScreen" class="screen">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 20px; color: var(--text-secondary);">Initializing game engine...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Gladiator Manager • Engine v1.0 • Modular Game System
+        </div>
+    </div>
+
+    <!-- ================================================================
+         EMBEDDED GAME ENGINE SCRIPTS
+         This follows the pattern of the existing games in the repo
+         ================================================================ -->
+
+    <script>
+        // EVENT BUS - FIRST (other scripts depend on it)
+        const EventBus = (() => {
+            const listeners = {};
+
+            const on = (event, callback, priority = 0) => {
+                if (!listeners[event]) {
+                    listeners[event] = [];
+                }
+                listeners[event].push({ callback, priority });
+                listeners[event].sort((a, b) => b.priority - a.priority);
+            };
+
+            const off = (event, callback) => {
+                if (!listeners[event]) return;
+                listeners[event] = listeners[event].filter(item => item.callback !== callback);
+            };
+
+            const emit = (event, data = {}) => {
+                if (!listeners[event]) return;
+                listeners[event].forEach(item => {
+                    try {
+                        item.callback(data);
+                    } catch (error) {
+                        console.error(`Error in event listener for "${event}":`, error);
+                    }
+                });
+            };
+
+            const clear = () => {
+                Object.keys(listeners).forEach(key => delete listeners[key]);
+            };
+
+            return { on, off, emit, clear };
+        })();
+
+        // EVENT DEFINITIONS
+        const Events = {
+            GAME_START: "game:start",
+            GAME_LOAD: "game:load",
+            GAME_PAUSE: "game:pause",
+            GAME_RESUME: "game:resume",
+            GAME_END: "game:end",
+            SEASON_START: "season:start",
+            SEASON_END: "season:end",
+            MATCH_SCHEDULED: "match:scheduled",
+            MATCH_START: "match:start",
+            MATCH_END: "match:end",
+            FIGHTER_ADDED: "fighter:added",
+            FIGHTER_REMOVED: "fighter:removed",
+            FIGHTER_TRAINED: "fighter:trained",
+            FIGHTER_INJURED: "fighter:injured",
+            FIGHTER_HEALED: "fighter:healed",
+            COMBAT_TURN: "combat:turn",
+            COMBAT_CHOICE_MADE: "combat:choiceMade",
+            COMBAT_RESOLVED: "combat:resolved",
+            FUNDS_CHANGED: "funds:changed",
+            REPUTATION_CHANGED: "reputation:changed",
+            SCREEN_CHANGED: "ui:screenChanged",
+            SELECTION_CHANGED: "ui:selectionChanged"
+        };
+
+        // STATE MANAGER
+        const StateManager = (() => {
+            let state = {
+                gameId: null,
+                theme: null,
+                ruleset: null,
+                currentLevel: 1,
+                currentTier: 1,
+                currentSeason: 1,
+                teamName: "New Stable",
+                roster: [],
+                retiredFighters: [],
+                deadFighters: [],
+                funds: 5000,
+                seasonStats: {
+                    matchesPlayed: 0,
+                    matchesWon: 0,
+                    seatsFilled: 0,
+                    totalSeatsAvailable: 0
+                },
+                reputation: 0,
+                winStreak: 0,
+                schedule: [],
+                currentScreen: "mainMenu",
+                selectedFighter: null,
+                selectedMatch: null
+            };
+
+            const listeners = {};
+
+            const getState = () => ({ ...state });
+
+            const getSlice = (key) => {
+                if (key.includes(".")) {
+                    const [parent, child] = key.split(".");
+                    return state[parent]?.[child];
+                }
+                return state[key];
+            };
+
+            const setState = (updates, triggerEvent = true) => {
+                const oldState = { ...state };
+                Object.keys(updates).forEach(key => {
+                    if (key.includes(".")) {
+                        const [parent, child] = key.split(".");
+                        if (!state[parent]) state[parent] = {};
+                        state[parent][child] = updates[key];
+                    } else {
+                        state[key] = updates[key];
+                    }
+                });
+
+                if (triggerEvent) {
+                    notifyListeners("stateChanged", { oldState, newState: { ...state } });
+                }
+                return state;
+            };
+
+            const addListener = (event, callback) => {
+                if (!listeners[event]) listeners[event] = [];
+                listeners[event].push(callback);
+            };
+
+            const removeListener = (event, callback) => {
+                if (!listeners[event]) return;
+                listeners[event] = listeners[event].filter(cb => cb !== callback);
+            };
+
+            const notifyListeners = (event, data = {}) => {
+                if (!listeners[event]) return;
+                listeners[event].forEach(callback => callback(data));
+            };
+
+            const addFighter = (fighter) => {
+                const newFighter = {
+                    id: `fighter_${Date.now()}_${Math.random()}`,
+                    name: fighter.name || "Unnamed Gladiator",
+                    level: 1,
+                    tier: 1,
+                    health: 5,
+                    maxHealth: 5,
+                    stats: {
+                        Strength: 1,
+                        Stamina: 1,
+                        Defense: 1,
+                        Sense: 1
+                    },
+                    record: { wins: 0, losses: 0, draws: 0 },
+                    status: "healthy",
+                    injuries: [],
+                    ...fighter
+                };
+
+                state.roster.push(newFighter);
+                notifyListeners("fighterAdded", { fighter: newFighter });
+                return newFighter;
+            };
+
+            const removeFighter = (fighterId, reason = "retired") => {
+                const fighter = state.roster.find(f => f.id === fighterId);
+                if (!fighter) return null;
+
+                state.roster = state.roster.filter(f => f.id !== fighterId);
+
+                if (reason === "dead") {
+                    state.deadFighters.push(fighter);
+                } else if (reason === "retired") {
+                    state.retiredFighters.push(fighter);
+                }
+
+                notifyListeners("fighterRemoved", { fighter, reason });
+                return fighter;
+            };
+
+            const updateFighter = (fighterId, updates) => {
+                const fighter = state.roster.find(f => f.id === fighterId);
+                if (!fighter) return null;
+
+                Object.assign(fighter, updates);
+                notifyListeners("fighterUpdated", { fighter });
+                return fighter;
+            };
+
+            const getFighter = (fighterId) => {
+                return state.roster.find(f => f.id === fighterId);
+            };
+
+            const addMatch = (match) => {
+                state.schedule.push(match);
+                notifyListeners("matchScheduled", { match });
+                return match;
+            };
+
+            const reset = () => {
+                state = {
+                    gameId: null,
+                    theme: null,
+                    ruleset: null,
+                    currentLevel: 1,
+                    currentTier: 1,
+                    currentSeason: 1,
+                    teamName: "New Stable",
+                    roster: [],
+                    retiredFighters: [],
+                    deadFighters: [],
+                    funds: 5000,
+                    seasonStats: {
+                        matchesPlayed: 0,
+                        matchesWon: 0,
+                        seatsFilled: 0,
+                        totalSeatsAvailable: 0
+                    },
+                    reputation: 0,
+                    winStreak: 0,
+                    schedule: [],
+                    currentScreen: "mainMenu",
+                    selectedFighter: null,
+                    selectedMatch: null
+                };
+                notifyListeners("gameReset", {});
+            };
+
+            return {
+                getState,
+                getSlice,
+                setState,
+                addListener,
+                removeListener,
+                notifyListeners,
+                addFighter,
+                removeFighter,
+                updateFighter,
+                getFighter,
+                addMatch,
+                reset
+            };
+        })();
+
+        // PERSISTENCE SYSTEM
+        const Persistence = (() => {
+            const STORAGE_KEY = "gladiator-manager-saves";
+            const MAX_SLOTS = 5;
+
+            const getSaveSlots = () => {
+                const saves = localStorage.getItem(STORAGE_KEY);
+                return saves ? JSON.parse(saves) : {};
+            };
+
+            const setSaveSlots = (slots) => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(slots));
+            };
+
+            const save = (slotNumber, metadata = {}) => {
+                if (slotNumber < 1 || slotNumber > MAX_SLOTS) {
+                    console.error(`Invalid save slot: ${slotNumber}. Must be 1-${MAX_SLOTS}`);
+                    return null;
+                }
+
+                const slots = getSaveSlots();
+                const state = StateManager.getState();
+
+                const saveData = {
+                    slot: slotNumber,
+                    timestamp: new Date().toISOString(),
+                    gameId: state.gameId,
+                    teamName: state.teamName,
+                    currentLevel: state.currentLevel,
+                    currentTier: state.currentTier,
+                    currentSeason: state.currentSeason,
+                    funds: state.funds,
+                    reputation: state.reputation,
+                    winStreak: state.winStreak,
+                    roster: state.roster,
+                    seasonStats: state.seasonStats,
+                    ...metadata
+                };
+
+                slots[slotNumber] = saveData;
+                setSaveSlots(slots);
+
+                EventBus.emit(Events.GAME_LOAD, { action: "saved", slot: slotNumber });
+                return saveData;
+            };
+
+            const load = (slotNumber) => {
+                if (slotNumber < 1 || slotNumber > MAX_SLOTS) {
+                    console.error(`Invalid save slot: ${slotNumber}. Must be 1-${MAX_SLOTS}`);
+                    return null;
+                }
+
+                const slots = getSaveSlots();
+                const saveData = slots[slotNumber];
+
+                if (!saveData) {
+                    console.warn(`No save data in slot ${slotNumber}`);
+                    return null;
+                }
+
+                StateManager.setState({
+                    gameId: saveData.gameId,
+                    teamName: saveData.teamName,
+                    currentLevel: saveData.currentLevel,
+                    currentTier: saveData.currentTier,
+                    currentSeason: saveData.currentSeason,
+                    funds: saveData.funds,
+                    reputation: saveData.reputation,
+                    winStreak: saveData.winStreak,
+                    roster: saveData.roster || [],
+                    seasonStats: saveData.seasonStats || {}
+                }, false);
+
+                EventBus.emit(Events.GAME_LOAD, { action: "loaded", slot: slotNumber });
+                return saveData;
+            };
+
+            const getSlotInfo = (slotNumber) => {
+                if (slotNumber < 1 || slotNumber > MAX_SLOTS) return null;
+                const slots = getSaveSlots();
+                return slots[slotNumber] || null;
+            };
+
+            const getAllSlots = () => {
+                const slots = getSaveSlots();
+                const allSlots = [];
+                for (let i = 1; i <= MAX_SLOTS; i++) {
+                    allSlots.push(slots[i] || null);
+                }
+                return allSlots;
+            };
+
+            const deleteSlot = (slotNumber) => {
+                if (slotNumber < 1 || slotNumber > MAX_SLOTS) {
+                    console.error(`Invalid save slot: ${slotNumber}. Must be 1-${MAX_SLOTS}`);
+                    return false;
+                }
+
+                const slots = getSaveSlots();
+                delete slots[slotNumber];
+                setSaveSlots(slots);
+
+                EventBus.emit(Events.GAME_LOAD, { action: "deleted", slot: slotNumber });
+                return true;
+            };
+
+            const clearAllSlots = () => {
+                localStorage.removeItem(STORAGE_KEY);
+                EventBus.emit(Events.GAME_LOAD, { action: "cleared" });
+            };
+
+            return {
+                save,
+                load,
+                getSlotInfo,
+                getAllSlots,
+                deleteSlot,
+                clearAllSlots,
+                MAX_SLOTS
+            };
+        })();
+
+        // CONFIG LOADER
+        const ConfigLoader = (() => {
+            let loadedRuleset = null;
+            let loadedTheme = null;
+
+            const loadRuleset = (rulesetData) => {
+                if (!rulesetData) {
+                    console.error("No ruleset data provided");
+                    return null;
+                }
+                loadedRuleset = rulesetData;
+                return loadedRuleset;
+            };
+
+            const loadTheme = (themeData) => {
+                if (!themeData) {
+                    console.error("No theme data provided");
+                    return null;
+                }
+                loadedTheme = themeData;
+                applyCSSVariables(themeData.colors);
+                return loadedTheme;
+            };
+
+            const getRuleset = () => loadedRuleset;
+            const getTheme = () => loadedTheme;
+
+            const getConfig = (path) => {
+                const parts = path.split(".");
+                let value = loadedRuleset;
+                for (const part of parts) {
+                    value = value?.[part];
+                    if (value === undefined) break;
+                }
+                return value;
+            };
+
+            const getThemeString = (path) => {
+                const parts = path.split(".");
+                let value = loadedTheme;
+                for (const part of parts) {
+                    value = value?.[part];
+                    if (value === undefined) break;
+                }
+                return value || "";
+            };
+
+            const applyCSSVariables = (colors) => {
+                const root = document.documentElement;
+                Object.keys(colors).forEach(key => {
+                    const cssVarName = `--${key
+                        .replace(/([A-Z])/g, "-$1")
+                        .toLowerCase()
+                        .replace(/^-/, "")}`;
+                    root.style.setProperty(cssVarName, colors[key]);
+                });
+            };
+
+            const validateRuleset = (ruleset) => {
+                const required = ["levels", "combat", "training", "economy"];
+                const missing = required.filter(key => !ruleset[key]);
+                if (missing.length > 0) {
+                    console.error("Ruleset missing required fields:", missing);
+                    return false;
+                }
+                return true;
+            };
+
+            const validateTheme = (theme) => {
+                const required = ["name", "colors", "narrative", "ui"];
+                const missing = required.filter(key => !theme[key]);
+                if (missing.length > 0) {
+                    console.error("Theme missing required fields:", missing);
+                    return false;
+                }
+                return true;
+            };
+
+            return {
+                loadRuleset,
+                loadTheme,
+                getRuleset,
+                getTheme,
+                getConfig,
+                getThemeString,
+                validateRuleset,
+                validateTheme
+            };
+        })();
+
+        // GAME ENGINE
+        const GameEngine = (() => {
+            let isRunning = false;
+            let isPaused = false;
+            let gameLoopInterval = null;
+
+            const initialize = async (ruleset, theme) => {
+                if (!ruleset || !theme) {
+                    console.error("Ruleset and theme are required to initialize the game");
+                    return false;
+                }
+
+                const rulesetValid = ConfigLoader.validateRuleset(ruleset);
+                const themeValid = ConfigLoader.validateTheme(theme);
+
+                if (!rulesetValid || !themeValid) {
+                    console.error("Configuration validation failed");
+                    return false;
+                }
+
+                ConfigLoader.loadRuleset(ruleset);
+                ConfigLoader.loadTheme(theme);
+
+                StateManager.setState({
+                    gameId: `game_${Date.now()}`,
+                    theme: theme.name,
+                    ruleset: ruleset.version
+                }, false);
+
+                EventBus.emit(Events.GAME_START, { gameId: StateManager.getState().gameId });
+
+                return true;
+            };
+
+            const start = () => {
+                if (isRunning) return;
+                isRunning = true;
+                isPaused = false;
+                gameLoopInterval = setInterval(() => {
+                    update();
+                }, 100);
+                EventBus.emit(Events.GAME_START);
+            };
+
+            const pause = () => {
+                if (!isRunning || isPaused) return;
+                isPaused = true;
+                if (gameLoopInterval) {
+                    clearInterval(gameLoopInterval);
+                    gameLoopInterval = null;
+                }
+                EventBus.emit(Events.GAME_PAUSE);
+            };
+
+            const resume = () => {
+                if (!isRunning || !isPaused) return;
+                isPaused = false;
+                gameLoopInterval = setInterval(() => {
+                    update();
+                }, 100);
+                EventBus.emit(Events.GAME_RESUME);
+            };
+
+            const stop = () => {
+                if (gameLoopInterval) {
+                    clearInterval(gameLoopInterval);
+                    gameLoopInterval = null;
+                }
+                isRunning = false;
+                isPaused = false;
+                EventBus.emit(Events.GAME_END);
+            };
+
+            const update = () => {
+                // Placeholder for game loop
+            };
+
+            const getStatus = () => ({
+                isRunning,
+                isPaused,
+                gameTime: StateManager.getState().currentSeason
+            });
+
+            const newGame = (teamName = "New Stable") => {
+                StateManager.reset();
+                StateManager.setState({
+                    teamName: teamName,
+                    funds: 5000
+                }, false);
+                EventBus.emit(Events.GAME_START, { isNewGame: true });
+            };
+
+            const saveGame = (slotNumber) => {
+                return Persistence.save(slotNumber, {
+                    theme: ConfigLoader.getTheme().name,
+                    ruleset: ConfigLoader.getRuleset().version
+                });
+            };
+
+            const loadGame = (slotNumber) => {
+                const result = Persistence.load(slotNumber);
+                if (result) {
+                    EventBus.emit(Events.GAME_LOAD, { slot: slotNumber });
+                }
+                return result;
+            };
+
+            return {
+                initialize,
+                start,
+                pause,
+                resume,
+                stop,
+                update,
+                getStatus,
+                newGame,
+                saveGame,
+                loadGame
+            };
+        })();
+
+        // UI CONTROLLER
+        const UI = (() => {
+            const showScreen = (screenId) => {
+                document.querySelectorAll(".screen").forEach(el => {
+                    el.classList.remove("active");
+                });
+                const screen = document.getElementById(screenId);
+                if (screen) {
+                    screen.classList.add("active");
+                }
+            };
+
+            const updateStatus = () => {
+                const state = StateManager.getState();
+                document.getElementById("teamName").textContent = state.teamName;
+                document.getElementById("currentLevel").textContent = state.currentLevel;
+                document.getElementById("currentSeason").textContent = state.currentSeason;
+                document.getElementById("funds").textContent = state.funds;
+                document.getElementById("rosterSize").textContent = state.roster.length;
+                document.getElementById("reputation").textContent = state.reputation;
+            };
+
+            const newGame = async () => {
+                showScreen("loadingScreen");
+
+                // Simulate loading configuration
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Load default ruleset and theme
+                const ruleset = {
+                    version: "1.0.0",
+                    gameTitle: "Gladiator Manager",
+                    levels: {
+                        level1: { name: "Countryside Circuit", advancementThreshold: 0.90 }
+                    },
+                    combat: {},
+                    training: { stats: ["Strength", "Stamina", "Defense", "Sense"] },
+                    economy: { startingFunds: 5000 }
+                };
+
+                const theme = {
+                    name: "Gladiator",
+                    colors: {
+                        primaryDark: "#1a1a1a",
+                        primaryMedium: "#2a2a2a",
+                        primaryLight: "#4a4a4a",
+                        accentPrimary: "#D4AF37",
+                        accentSecondary: "#8B4513",
+                        accentTertiary: "#8B0000"
+                    },
+                    narrative: { teamName: "Stable", fighterName: "Gladiator" },
+                    ui: { mainMenuTitle: "Gladiator Manager" }
+                };
+
+                await GameEngine.initialize(ruleset, theme);
+                GameEngine.newGame("My Stable");
+
+                showScreen("gameScreen");
+                updateStatus();
+            };
+
+            const backToMenu = () => {
+                showScreen("mainMenuScreen");
+                StateManager.reset();
+            };
+
+            const showLoadScreen = () => {
+                alert("Load game functionality coming soon!");
+            };
+
+            const showSettings = () => {
+                alert("Settings coming soon!");
+            };
+
+            // Listen for state changes
+            StateManager.addListener("stateChanged", updateStatus);
+            EventBus.on(Events.FIGHTER_ADDED, updateStatus);
+            EventBus.on(Events.FUNDS_CHANGED, updateStatus);
+
+            return {
+                showScreen,
+                updateStatus,
+                newGame,
+                backToMenu,
+                showLoadScreen,
+                showSettings
+            };
+        })();
+
+        // Initialize on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("Gladiator Manager engine loaded successfully!");
+            console.log("Game systems ready:");
+            console.log("✓ Event Bus");
+            console.log("✓ State Manager");
+            console.log("✓ Persistence System");
+            console.log("✓ Config Loader");
+            console.log("✓ Game Engine");
+            console.log("✓ UI Controller");
+        });
+    </script>
+</body>
+</html>

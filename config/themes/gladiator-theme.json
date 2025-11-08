@@ -1,0 +1,70 @@
+{
+  "version": "1.0.0",
+  "name": "Gladiator",
+  "description": "Family-friendly ancient gladiator theme",
+  "isRated": false,
+
+  "colors": {
+    "primaryDark": "#1a1a1a",
+    "primaryMedium": "#2a2a2a",
+    "primaryLight": "#4a4a4a",
+    "accentPrimary": "#D4AF37",
+    "accentSecondary": "#8B4513",
+    "accentTertiary": "#8B0000",
+    "textPrimary": "#ffffff",
+    "textSecondary": "#cccccc",
+    "healthBar": "#10B981",
+    "damageBar": "#EF4444"
+  },
+
+  "narrative": {
+    "teamName": "Stable",
+    "fighterName": "Gladiator",
+    "arenaName": "Amphitheater",
+    "authorityName": "Lanista",
+    "currency": "Denarii",
+    "levelNames": {
+      "level1": "Countryside Circuit",
+      "level2": "Traveling Circus",
+      "level3": "Colosseum"
+    }
+  },
+
+  "ui": {
+    "mainMenuTitle": "Gladiator Manager",
+    "mainMenuSubtitle": "Build your stable and dominate the arenas",
+    "screens": {
+      "townSelect": "Select Your Town",
+      "roster": "Your Stable",
+      "training": "Training Grounds",
+      "marketing": "Promotion",
+      "schedule": "Match Schedule",
+      "combat": "Arena Combat",
+      "results": "Match Results"
+    }
+  },
+
+  "messages": {
+    "victoryGeneric": "Your gladiator stands victorious!",
+    "defeatGeneric": "Your gladiator has fallen.",
+    "injuryMinor": "Your gladiator suffered a minor wound.",
+    "injurySevere": "Your gladiator has been crippled and cannot fight until next season.",
+    "deathMessage": "Your gladiator has perished in the arena. A replacement will join your stable next season.",
+    "levelAdvance": "Excellent performance! Your stable is invited to the next tier.",
+    "seasonStart": "A new season begins. Prepare your fighters!",
+    "seasonEnd": "The season has ended. Review your standings and prepare for next season."
+  },
+
+  "icons": {
+    "strength": "💪",
+    "stamina": "🫁",
+    "defense": "🛡️",
+    "sense": "🧠",
+    "health": "❤️",
+    "victory": "🏆",
+    "defeat": "⚔️",
+    "training": "🏋️",
+    "marketing": "📣",
+    "schedule": "📅"
+  }
+}

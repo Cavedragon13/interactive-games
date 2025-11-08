@@ -1,0 +1,115 @@
+{
+  "version": "1.0.0",
+  "gameTitle": "Gladiator Manager",
+  "description": "Manage a team of gladiators through three tiers of combat arenas",
+
+  "levels": {
+    "level1": {
+      "name": "Countryside Circuit",
+      "tiers": 10,
+      "minFighters": 10,
+      "maxFighters": 10,
+      "minArenaSeatCapacity": 150,
+      "maxArenaSeatCapacity": 500,
+      "combatType": "first_blood",
+      "deathChance": 0.03,
+      "cripplingWoundChance": 0.05,
+      "canReplaceInSeason": true,
+      "advancementThreshold": 0.90
+    },
+    "level2": {
+      "name": "Traveling Circuit",
+      "tiers": 10,
+      "minFighters": 5,
+      "maxFighters": 10,
+      "minArenaSeatCapacity": 500,
+      "maxArenaSeatCapacity": 3000,
+      "combatType": "first_blood",
+      "deathChance": 0.05,
+      "cripplingWoundChance": 0.08,
+      "canReplaceInSeason": false,
+      "advancementThreshold": 0.90
+    },
+    "level3": {
+      "name": "Imperial Arena",
+      "tiers": 10,
+      "minFighters": 3,
+      "maxFighters": 3,
+      "minArenaSeatCapacity": 3000,
+      "maxArenaSeatCapacity": 5000,
+      "combatType": "tournament",
+      "deathChance": 0.08,
+      "cripplingWoundChance": 0.10,
+      "canReplaceInSeason": false,
+      "advancementThreshold": 1.0
+    }
+  },
+
+  "combat": {
+    "baseHealthPoints": 5,
+    "choices": ["attack", "shield", "parry"],
+    "mechanics": {
+      "attack": {
+        "beats": "parry",
+        "fullDamageAgainst": "none",
+        "halfDamageAgainst": "shield",
+        "noDamageAgainst": "attack"
+      },
+      "shield": {
+        "beats": "attack",
+        "fullDamageAgainst": "none",
+        "halfDamageAgainst": "parry",
+        "noDamageAgainst": "shield"
+      },
+      "parry": {
+        "beats": "shield",
+        "fullDamageAgainst": "attack",
+        "halfDamageAgainst": "none",
+        "noDamageAgainst": "parry"
+      }
+    }
+  },
+
+  "training": {
+    "stats": ["Strength", "Stamina", "Defense", "Sense"],
+    "pointsPerSeason": 10,
+    "statBonusPerPoint": {
+      "Strength": 0.1,
+      "Stamina": 0.05,
+      "Defense": 0.1,
+      "Sense": 0.08
+    },
+    "statEffects": {
+      "Strength": "Increases attack damage and health",
+      "Stamina": "Increases HP regeneration during matches",
+      "Defense": "Reduces incoming damage",
+      "Sense": "Improves decision-making in combat"
+    }
+  },
+
+  "economy": {
+    "baseCurrency": "Gold",
+    "healingCost": {
+      "minorInjury": 50,
+      "majorInjury": 200,
+      "crippledFighter": 500
+    },
+    "hypeCost": 100,
+    "hypeBenefits": {
+      "attendanceMultiplier": 1.15,
+      "minStreakBonus": 3
+    },
+    "startingFunds": 5000
+  },
+
+  "seasons": {
+    "matchesPerSeason": 10,
+    "homeAwayRatio": 0.5,
+    "maxTeamSize": 10
+  },
+
+  "progression": {
+    "seasonsToReachTierThreshold": 3,
+    "fightersToRetainOnAdvance": 5
+  }
+}
