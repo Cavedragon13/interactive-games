@@ -147,10 +147,76 @@
             font-weight: bold;
             margin-right: 0.5rem;
         }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            background: #00d4ff;
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 50%, #d0d0d0 100%);
+            color: #1a1a1a;
+        }
+
+        body.light-mode .header h1 {
+            background: linear-gradient(135deg, #0099cc, #cc0066);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.light-mode .header p,
+        body.light-mode .game-card p,
+        body.light-mode .features-list li {
+            color: #4a4a4a;
+        }
+
+        body.light-mode .game-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .game-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 153, 204, 0.3);
+        }
+
+        body.light-mode .features {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .theme-toggle {
+            background: #ffffff;
+            color: #1a1a1a;
+        }
     </style>
 </head>
 
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">☀️</button>
+
     <div class="container">
         <a href="../../" class="back-link">← Back to Main Site</a>
         
@@ -193,5 +259,36 @@
             </ul>
         </div>
     </div>
+
+    <script>
+        // Theme Toggle Functionality
+        function initTheme() {
+            const savedTheme = localStorage.getItem('app-theme');
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Default to dark mode unless light mode is explicitly saved
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.textContent = '🌙';
+            } else {
+                // Dark mode (default)
+                themeToggle.textContent = '☀️';
+                if (!savedTheme) {
+                    localStorage.setItem('app-theme', 'dark');
+                }
+            }
+
+            // Add click handler for theme toggle
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode');
+                const isLight = document.body.classList.contains('light-mode');
+                themeToggle.textContent = isLight ? '🌙' : '☀️';
+                localStorage.setItem('app-theme', isLight ? 'light' : 'dark');
+            });
+        }
+
+        // Initialize theme on page load
+        initTheme();
+    </script>
 </body>
 </html>

@@ -17,6 +17,34 @@ async function loadScenarios() {
 }
 
 // ================================================================
+// THEME MANAGEMENT
+// ================================================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('app-theme');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // Default to dark mode unless light mode is explicitly saved
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeToggle.textContent = '🌙';
+    } else {
+        // Dark mode (default)
+        themeToggle.textContent = '☀️';
+        if (!savedTheme) {
+            localStorage.setItem('app-theme', 'dark');
+        }
+    }
+
+    // Add click handler for theme toggle
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        themeToggle.textContent = isLight ? '🌙' : '☀️';
+        localStorage.setItem('app-theme', isLight ? 'light' : 'dark');
+    });
+}
+
+// ================================================================
 // GAME STATE MANAGEMENT
 // ================================================================
 let currentScenario = null;
@@ -725,6 +753,9 @@ function resetGame() {
 // INITIALIZATION
 // ================================================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize theme (dark/light mode)
+    initTheme();
+
     // Initialize DOM elements
     timerDisplay = document.getElementById('timerDisplay');
     initialsModal = document.getElementById('initialsModal');
