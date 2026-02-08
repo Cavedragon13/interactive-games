@@ -903,8 +903,11 @@ function checkRankings() {
     scoreDiv.className = 'score';
 
     const totalScoreDiv = document.createElement('div');
-    totalScoreDiv.textContent = `SURVIVAL ASSESSMENT SCORE: ${totalScore}`;
+    totalScoreDiv.textContent = `SURVIVAL ASSESSMENT SCORE: 0`;
     scoreDiv.appendChild(totalScoreDiv);
+
+    // Animate score count-up
+    animateScoreCountUp(totalScoreDiv, totalScore);
 
     const assessmentDiv = document.createElement('div');
     assessmentDiv.style.color = assessmentColor;
@@ -1146,8 +1149,16 @@ function updateTimerDisplay() {
     timerDisplay.textContent = formatTime(timeRemaining, false);
     if (timeRemaining <= 10000 && gameMode !== 'untimed') {
         timerDisplay.style.color = 'var(--danger-color)';
+        timerDisplay.classList.add('warning');
+        // Play tick sound at 10s warning (once)
+        if (timeRemaining <= 10000 && timeRemaining > 9000 && !timerDisplay.dataset.tickPlayed) {
+            audioManager.play('tick');
+            timerDisplay.dataset.tickPlayed = 'true';
+        }
     } else {
         timerDisplay.style.color = 'var(--accent-primary)';
+        timerDisplay.classList.remove('warning');
+        delete timerDisplay.dataset.tickPlayed;
     }
 }
 
@@ -1162,6 +1173,34 @@ function formatTime(ms, isTimeTaken = false) {
     } else {
         return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${milliseconds}`;
     }
+}
+
+// ================================================================
+// VISUAL POLISH - ANIMATIONS
+// ================================================================
+function animateScoreCountUp(element, targetScore) {
+    const duration = 800; // Animation duration in ms
+    const frameRate = 60; // Frames per second
+    const totalFrames = (duration / 1000) * frameRate;
+    const increment = targetScore / totalFrames;
+    let currentScore = 0;
+    let frame = 0;
+
+    const animate = () => {
+        frame++;
+        currentScore += increment;
+
+        if (frame >= totalFrames) {
+            currentScore = targetScore;
+            element.textContent = `SURVIVAL ASSESSMENT SCORE: ${Math.round(currentScore)}`;
+            return;
+        }
+
+        element.textContent = `SURVIVAL ASSESSMENT SCORE: ${Math.round(currentScore)}`;
+        requestAnimationFrame(animate);
+    };
+
+    requestAnimationFrame(animate);
 }
 
 // ================================================================
