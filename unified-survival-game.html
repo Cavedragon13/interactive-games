@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Screen Reader Announcements -->
+    <div id="srAnnouncements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="container" role="main" aria-label="Survival Decision Game">
         <!-- Game Selector -->
-        <div class="game-selector">
+        <div class="game-selector" role="region" aria-label="Scenario Selection">
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">☀️</button>
             <div class="selector-title">Select Your Survival Training Scenario</div>
             <select class="scenario-select" id="scenarioSelect">
@@ -45,26 +48,26 @@
         
         <!-- Game Content (Hidden until scenario selected) -->
         <div class="game-content" id="gameContent">
-            <div class="scenario-box" id="scenarioBox" data-label="">
+            <div class="scenario-box" id="scenarioBox" data-label="" role="region" aria-label="Emergency Scenario Description">
                 <div class="scenario-title" id="scenarioTitle"></div>
                 <div class="scenario-text" id="scenarioText"></div>
             </div>
-            
-            <div class="instructions" id="instructions" data-label="">
+
+            <div class="instructions" id="instructions" data-label="" role="region" aria-label="Game Instructions">
                 <strong id="instructionsTitle"></strong><br>
                 <span id="instructionsText"></span>
             </div>
             
             <!-- Timer and Difficulty Selection -->
-            <div class="difficulty-selection">
+            <div class="difficulty-selection" role="region" aria-label="Game Mode Selection">
                 <h4>Game Mode</h4>
-                <button id="difficultyUntimed" class="active">Untimed</button>
-                <button id="difficulty1min">1 Minute</button>
-                <button id="difficulty3min">3 Minutes</button>
-                <button id="difficulty5min">5 Minutes</button>
+                <button id="difficultyUntimed" class="active" aria-label="Select untimed mode - no time limit">Untimed</button>
+                <button id="difficulty1min" aria-label="Select 1 minute timed challenge">1 Minute</button>
+                <button id="difficulty3min" aria-label="Select 3 minute timed challenge">3 Minutes</button>
+                <button id="difficulty5min" aria-label="Select 5 minute timed challenge">5 Minutes</button>
             </div>
 
-            <div class="timer-display" id="timerDisplay">00:00</div>
+            <div class="timer-display" id="timerDisplay" role="timer" aria-live="off" aria-label="Time remaining">00:00</div>
             
             <div class="drag-instructions">
                 <span class="drag-icon" id="dragIcon"></span>
@@ -72,12 +75,12 @@
             </div>
             
             <div class="progress-indicator" id="progressText"></div>
-            
-            <div class="ranking-area" id="rankingArea"></div>
-            
+
+            <div class="ranking-area" id="rankingArea" role="list" aria-label="Survival items to rank"></div>
+
             <div class="controls">
-                <button class="btn" id="checkBtn"></button>
-                <button class="btn" id="resetBtn"></button>
+                <button class="btn" id="checkBtn" aria-label="Submit rankings for expert assessment"></button>
+                <button class="btn" id="resetBtn" aria-label="Reset game and start over"></button>
             </div>
             
             <div class="seed13-branding">

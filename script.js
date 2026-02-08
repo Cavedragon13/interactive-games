@@ -45,6 +45,20 @@ function initTheme() {
 }
 
 // ================================================================
+// SCREEN READER ANNOUNCEMENTS
+// ================================================================
+function announce(message) {
+    const srAnnouncements = document.getElementById('srAnnouncements');
+    if (srAnnouncements) {
+        srAnnouncements.textContent = message;
+        // Clear after 1 second to allow multiple announcements
+        setTimeout(() => {
+            srAnnouncements.textContent = '';
+        }, 1000);
+    }
+}
+
+// ================================================================
 // KEYBOARD NAVIGATION
 // ================================================================
 let keyboardSelectedCard = null;
@@ -138,6 +152,7 @@ function moveCardUp(card) {
                 newCards[currentOrderIndex - 1].classList.add('keyboard-selected');
                 newCards[currentOrderIndex - 1].focus();
                 keyboardSelectedCard = newCards[currentOrderIndex - 1];
+                announce(`Item moved to rank ${currentOrderIndex}. ${card.getAttribute('aria-label')}`);
             }, 50);
         }
     }
@@ -164,6 +179,7 @@ function moveCardDown(card) {
                 newCards[currentOrderIndex + 1].classList.add('keyboard-selected');
                 newCards[currentOrderIndex + 1].focus();
                 keyboardSelectedCard = newCards[currentOrderIndex + 1];
+                announce(`Item moved to rank ${currentOrderIndex + 2}. ${card.getAttribute('aria-label')}`);
             }, 50);
         }
     }
@@ -288,6 +304,10 @@ async function loadScenario(scenarioKey) {
                 
                 // Initialize game
                 initGame();
+
+                // Announce scenario loaded to screen readers
+                announce(`Scenario loaded: ${currentScenario.content.gameTitle}. ${currentScenario.items.length} survival items to rank.`);
+
                 return true;
                 
             } catch (error) {
@@ -726,6 +746,10 @@ function checkRankings() {
 
         resultsContainer.appendChild(timeCompletedDiv);
     }
+
+    // Announce score to screen readers
+    announce(`Score calculated: ${totalScore} points. ${assessment}`);
+
     document.getElementById('results').classList.add('show');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
     
@@ -742,7 +766,7 @@ function checkRankings() {
 // ================================================================
 function setDifficulty(mode) {
     gameMode = mode;
-    
+
     // Update button states
     document.querySelectorAll('.difficulty-selection button').forEach(btn => {
         btn.classList.remove('active');
@@ -755,12 +779,15 @@ function setDifficulty(mode) {
         timerDisplay.style.color = 'var(--text-primary)';
         gameActive = true;
         document.getElementById('checkBtn').disabled = false;
+        announce('Untimed mode selected. No time limit.');
     } else {
         timeRemaining = getInitialTime(gameMode) * 1000;
         updateTimerDisplay();
         gameActive = true;
         document.getElementById('checkBtn').disabled = false;
         startTimer();
+        const minutes = Math.floor(getInitialTime(gameMode) / 60);
+        announce(`${minutes} minute timed challenge started. Timer is running.`);
     }
     displayHighScores(gameMode);
 }
