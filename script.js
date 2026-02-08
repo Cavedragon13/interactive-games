@@ -172,6 +172,169 @@ function initTheme() {
 }
 
 // ================================================================
+// ACHIEVEMENT SYSTEM
+// ================================================================
+const achievementManager = {
+    achievements: {
+        // Completion Achievements
+        scenarioMaster: {
+            id: 'scenarioMaster',
+            name: 'Scenario Master',
+            description: 'Complete all 8 survival scenarios',
+            icon: '🏆',
+            unlocked: false,
+            unlockedDate: null,
+            progress: 0,
+            maxProgress: 8
+        },
+        speedDemon: {
+            id: 'speedDemon',
+            name: 'Speed Demon',
+            description: 'Complete any scenario in under 1 minute',
+            icon: '⏱️',
+            unlocked: false,
+            unlockedDate: null
+        },
+        perfectScore: {
+            id: 'perfectScore',
+            name: 'Perfect Score',
+            description: 'Achieve 100/100 in any scenario',
+            icon: '🎯',
+            unlocked: false,
+            unlockedDate: null
+        },
+
+        // Skill Achievements (one per scenario)
+        lunarLegend: { id: 'lunarLegend', name: 'Lunar Legend', description: 'Score 90+ in Lunar Survival', icon: '🌙', unlocked: false, scenario: 'moon' },
+        seaSurvivor: { id: 'seaSurvivor', name: 'Sea Survivor', description: 'Score 90+ in Shipwreck', icon: '🌊', unlocked: false, scenario: 'shipwreck' },
+        mountainMaster: { id: 'mountainMaster', name: 'Mountain Master', description: 'Score 90+ in Mountain Crash', icon: '🏔️', unlocked: false, scenario: 'mountain' },
+        arcticAce: { id: 'arcticAce', name: 'Arctic Ace', description: 'Score 90+ in Arctic Emergency', icon: '🧊', unlocked: false, scenario: 'arctic' },
+        jungleJuggernaut: { id: 'jungleJuggernaut', name: 'Jungle Juggernaut', description: 'Score 90+ in Jungle Crash', icon: '🌴', unlocked: false, scenario: 'jungle' },
+        mineExpert: { id: 'mineExpert', name: 'Mine Expert', description: 'Score 90+ in Mine Collapse', icon: '⛏️', unlocked: false, scenario: 'mine' },
+        deepSeaDiver: { id: 'deepSeaDiver', name: 'Deep Sea Diver', description: 'Score 90+ in Deep Sea Emergency', icon: '🌊', unlocked: false, scenario: 'deepsea' },
+        spaceExplorer: { id: 'spaceExplorer', name: 'Space Explorer', description: 'Score 90+ in Asteroid Mining', icon: '🚀', unlocked: false, scenario: 'asteroid' }
+    },
+
+    init() {
+        // Load achievements from localStorage
+        const saved = localStorage.getItem('game-achievements');
+        if (saved) {
+            try {
+                const savedData = JSON.parse(saved);
+                // Merge saved data with defaults (in case new achievements were added)
+                Object.keys(savedData).forEach(key => {
+                    if (this.achievements[key]) {
+                        Object.assign(this.achievements[key], savedData[key]);
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to load achievements:', err);
+            }
+        }
+    },
+
+    save() {
+        localStorage.setItem('game-achievements', JSON.stringify(this.achievements));
+    },
+
+    unlock(achievementId) {
+        const achievement = this.achievements[achievementId];
+        if (!achievement || achievement.unlocked) return false;
+
+        achievement.unlocked = true;
+        achievement.unlockedDate = new Date().toISOString();
+        this.save();
+
+        // Show toast notification
+        this.showToast(achievement);
+
+        // Play success sound
+        audioManager.play('success');
+
+        // Announce to screen reader
+        announce(`Achievement unlocked: ${achievement.name}! ${achievement.description}`);
+
+        return true;
+    },
+
+    checkAchievements(scenarioId, differenceScore, timeMs, difficulty) {
+        let newUnlocks = [];
+
+        // Note: differenceScore is sum of ranking differences (lower is better)
+        // Perfect Score (0 difference)
+        if (differenceScore === 0 && !this.achievements.perfectScore.unlocked) {
+            if (this.unlock('perfectScore')) newUnlocks.push('perfectScore');
+        }
+
+        // Speed Demon (under 60 seconds)
+        if (timeMs && timeMs < 60000 && !this.achievements.speedDemon.unlocked) {
+            if (this.unlock('speedDemon')) newUnlocks.push('speedDemon');
+        }
+
+        // Skill achievements (excellent score ≤ 15 difference per scenario)
+        const scenarioAchievements = {
+            'moon': 'lunarLegend',
+            'shipwreck': 'seaSurvivor',
+            'mountain': 'mountainMaster',
+            'arctic': 'arcticAce',
+            'jungle': 'jungleJuggernaut',
+            'mine': 'mineExpert',
+            'deepsea': 'deepSeaDiver',
+            'asteroid': 'spaceExplorer'
+        };
+
+        const achievementId = scenarioAchievements[scenarioId];
+        if (achievementId && differenceScore <= 15 && !this.achievements[achievementId].unlocked) {
+            if (this.unlock(achievementId)) newUnlocks.push(achievementId);
+        }
+
+        // Scenario Master (completed all 8 scenarios)
+        const completedScenarios = Object.values(this.achievements)
+            .filter(a => a.scenario && a.unlocked).length;
+
+        this.achievements.scenarioMaster.progress = completedScenarios;
+
+        if (completedScenarios === 8 && !this.achievements.scenarioMaster.unlocked) {
+            if (this.unlock('scenarioMaster')) newUnlocks.push('scenarioMaster');
+        }
+
+        this.save();
+        return newUnlocks;
+    },
+
+    showToast(achievement) {
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = 'achievement-toast';
+        toast.innerHTML = `
+            <div class="achievement-icon">${achievement.icon}</div>
+            <div class="achievement-content">
+                <div class="achievement-title">Achievement Unlocked!</div>
+                <div class="achievement-name">${achievement.name}</div>
+                <div class="achievement-desc">${achievement.description}</div>
+            </div>
+        `;
+
+        document.body.appendChild(toast);
+
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 100);
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    },
+
+    getProgress() {
+        const total = Object.keys(this.achievements).length;
+        const unlocked = Object.values(this.achievements).filter(a => a.unlocked).length;
+        return { unlocked, total, percentage: Math.round((unlocked / total) * 100) };
+    }
+};
+
+// ================================================================
 // SCREEN READER ANNOUNCEMENTS
 // ================================================================
 function announce(message) {
@@ -409,7 +572,8 @@ async function loadScenario(scenarioKey) {
                 
                 // Load scenario data
                 currentScenario = scenario;
-                
+                currentScenario.id = scenarioKey; // Store scenario ID for achievements
+
                 // Apply theme colors with error handling
                 if (!applyTheme(currentScenario.theme)) {
                     console.warn('Theme application failed for scenario:', scenarioKey);
@@ -883,6 +1047,11 @@ function checkRankings() {
     // Announce score to screen readers
     announce(`Score calculated: ${totalScore} points. ${assessment}`);
 
+    // Check for achievement unlocks
+    if (currentScenario && currentScenario.id) {
+        achievementManager.checkAchievements(currentScenario.id, totalScore, finalTimeMs, gameMode);
+    }
+
     // Play success or failure sound based on score
     if (totalScore <= config.scoringThresholds.good) {
         audioManager.play('success');
@@ -1099,6 +1268,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize audio manager
     audioManager.init();
+
+    // Initialize achievement system
+    achievementManager.init();
 
     // Initialize keyboard navigation
     initKeyboardNavigation();
