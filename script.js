@@ -45,6 +45,167 @@ function initTheme() {
 }
 
 // ================================================================
+// KEYBOARD NAVIGATION
+// ================================================================
+let keyboardSelectedCard = null;
+
+function initKeyboardNavigation() {
+    document.addEventListener('keydown', handleKeyboardNavigation);
+}
+
+function handleKeyboardNavigation(e) {
+    const focusedCard = document.activeElement;
+
+    // Only handle keyboard navigation if we're focused on a card or have a selected card
+    if (!focusedCard.classList.contains('item-card') && !keyboardSelectedCard) {
+        return;
+    }
+
+    const currentCard = keyboardSelectedCard || focusedCard;
+    const allCards = Array.from(document.querySelectorAll('.item-card'));
+    const currentIndex = allCards.indexOf(currentCard);
+
+    switch(e.key) {
+        case 'ArrowUp':
+            e.preventDefault();
+            if (keyboardSelectedCard) {
+                // Move selected card up
+                moveCardUp(keyboardSelectedCard);
+            } else if (currentIndex > 0) {
+                // Navigate to previous card
+                allCards[currentIndex - 1].focus();
+            }
+            break;
+
+        case 'ArrowDown':
+            e.preventDefault();
+            if (keyboardSelectedCard) {
+                // Move selected card down
+                moveCardDown(keyboardSelectedCard);
+            } else if (currentIndex < allCards.length - 1) {
+                // Navigate to next card
+                allCards[currentIndex + 1].focus();
+            }
+            break;
+
+        case 'Enter':
+        case ' ':
+            e.preventDefault();
+            if (focusedCard.classList.contains('item-card')) {
+                toggleCardSelection(focusedCard);
+            }
+            break;
+
+        case 'Escape':
+            e.preventDefault();
+            if (keyboardSelectedCard) {
+                // Deselect card
+                keyboardSelectedCard.classList.remove('keyboard-selected');
+                keyboardSelectedCard = null;
+            }
+            break;
+
+        // Number keys 1-9, 0 for quick rank assignment
+        case '1': case '2': case '3': case '4': case '5':
+        case '6': case '7': case '8': case '9': case '0':
+            e.preventDefault();
+            if (focusedCard.classList.contains('item-card')) {
+                const rank = e.key === '0' ? 10 : parseInt(e.key);
+                assignCardToRank(focusedCard, rank);
+            }
+            break;
+    }
+}
+
+function moveCardUp(card) {
+    const allCards = Array.from(document.querySelectorAll('.item-card'));
+    const currentIndex = allCards.indexOf(card);
+
+    if (currentIndex > 0) {
+        const cardId = card.dataset.itemId;
+        const currentOrderIndex = currentOrder.findIndex(item => item.id === cardId);
+
+        if (currentOrderIndex > 0) {
+            // Swap in array
+            [currentOrder[currentOrderIndex], currentOrder[currentOrderIndex - 1]] =
+            [currentOrder[currentOrderIndex - 1], currentOrder[currentOrderIndex]];
+
+            renderItems();
+
+            // Keep focus on the moved card
+            setTimeout(() => {
+                const newCards = document.querySelectorAll('.item-card');
+                newCards[currentOrderIndex - 1].classList.add('keyboard-selected');
+                newCards[currentOrderIndex - 1].focus();
+                keyboardSelectedCard = newCards[currentOrderIndex - 1];
+            }, 50);
+        }
+    }
+}
+
+function moveCardDown(card) {
+    const allCards = Array.from(document.querySelectorAll('.item-card'));
+    const currentIndex = allCards.indexOf(card);
+
+    if (currentIndex < allCards.length - 1) {
+        const cardId = card.dataset.itemId;
+        const currentOrderIndex = currentOrder.findIndex(item => item.id === cardId);
+
+        if (currentOrderIndex < currentOrder.length - 1) {
+            // Swap in array
+            [currentOrder[currentOrderIndex], currentOrder[currentOrderIndex + 1]] =
+            [currentOrder[currentOrderIndex + 1], currentOrder[currentOrderIndex]];
+
+            renderItems();
+
+            // Keep focus on the moved card
+            setTimeout(() => {
+                const newCards = document.querySelectorAll('.item-card');
+                newCards[currentOrderIndex + 1].classList.add('keyboard-selected');
+                newCards[currentOrderIndex + 1].focus();
+                keyboardSelectedCard = newCards[currentOrderIndex + 1];
+            }, 50);
+        }
+    }
+}
+
+function toggleCardSelection(card) {
+    if (keyboardSelectedCard === card) {
+        // Deselect
+        card.classList.remove('keyboard-selected');
+        keyboardSelectedCard = null;
+    } else {
+        // Clear previous selection
+        if (keyboardSelectedCard) {
+            keyboardSelectedCard.classList.remove('keyboard-selected');
+        }
+        // Select new card
+        card.classList.add('keyboard-selected');
+        keyboardSelectedCard = card;
+    }
+}
+
+function assignCardToRank(card, rank) {
+    const cardId = card.dataset.itemId;
+    const currentOrderIndex = currentOrder.findIndex(item => item.id === cardId);
+
+    if (currentOrderIndex !== -1 && rank >= 1 && rank <= currentOrder.length) {
+        // Remove from current position
+        const movedItem = currentOrder.splice(currentOrderIndex, 1)[0];
+        // Insert at new position (rank is 1-indexed, array is 0-indexed)
+        currentOrder.splice(rank - 1, 0, movedItem);
+
+        renderItems();
+
+        // Keep focus on the moved card
+        setTimeout(() => {
+            const newCards = document.querySelectorAll('.item-card');
+            newCards[rank - 1].focus();
+        }, 50);
+    }
+}
+
+// ================================================================
 // GAME STATE MANAGEMENT
 // ================================================================
 let currentScenario = null;
@@ -254,6 +415,9 @@ function renderItems() {
         card.className = 'item-card';
         card.draggable = true;
         card.dataset.itemId = item.id;
+        card.tabIndex = 0; // Make focusable for keyboard navigation
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Rank ${index + 1}: ${item.name}`);
         
         // Create elements safely without innerHTML
         const rankNumber = document.createElement('div');
@@ -306,6 +470,11 @@ function handleDragStart(e) {
     e.target.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', e.target.outerHTML);
+
+    // Haptic feedback on mobile (vibrate for 50ms)
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
 }
 
 function handleDragEnd(e) {
@@ -342,14 +511,19 @@ function handleDrop(e) {
     if (dropTarget && draggedElement && dropTarget !== draggedElement) {
         const draggedId = draggedElement.dataset.itemId;
         const dropTargetId = dropTarget.dataset.itemId;
-        
+
         const draggedIndex = currentOrder.findIndex(item => item.id === draggedId);
         const dropTargetIndex = currentOrder.findIndex(item => item.id === dropTargetId);
-        
+
         const draggedItem = currentOrder.splice(draggedIndex, 1)[0];
         currentOrder.splice(dropTargetIndex, 0, draggedItem);
-        
+
         renderItems();
+
+        // Haptic feedback on successful drop (short vibration)
+        if (navigator.vibrate) {
+            navigator.vibrate(30);
+        }
     }
     return false;
 }
@@ -755,6 +929,9 @@ function resetGame() {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme (dark/light mode)
     initTheme();
+
+    // Initialize keyboard navigation
+    initKeyboardNavigation();
 
     // Initialize DOM elements
     timerDisplay = document.getElementById('timerDisplay');
