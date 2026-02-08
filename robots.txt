@@ -1,0 +1,26 @@
+# Survival Decision Series - Robots Configuration
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://seed13productions.com/games/survival/sitemap.xml
+
+# Allow all search engines to index the game
+# Encourage crawling of main pages
+Allow: /unified-survival-game.html
+Allow: /index.html
+Allow: /scenarios.json
+
+# Allow access to assets
+Allow: /style.css
+Allow: /script.js
+Allow: /audio/
+
+# Disallow editor/backup files
+Disallow: /*~
+Disallow: /*.backup
+Disallow: /.git/
+
+# Crawl delay (optional, prevents server overload)
+Crawl-delay: 1

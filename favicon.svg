@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2f5a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1b3a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="compassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3a7ca5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bgGrad)" rx="80"/>
+
+  <!-- Compass rose - survival symbol -->
+  <g transform="translate(256, 256)">
+    <!-- Outer ring -->
+    <circle cx="0" cy="0" r="180" fill="none" stroke="#3a7ca5" stroke-width="8" opacity="0.5"/>
+
+    <!-- North arrow (red) -->
+    <path d="M 0,-160 L 25,-80 L 0,-100 L -25,-80 Z" fill="#ef4444"/>
+
+    <!-- South arrow (white) -->
+    <path d="M 0,160 L 25,80 L 0,100 L -25,80 Z" fill="#ffffff"/>
+
+    <!-- East arrow -->
+    <path d="M 160,0 L 80,25 L 100,0 L 80,-25 Z" fill="url(#compassGrad)" opacity="0.8"/>
+
+    <!-- West arrow -->
+    <path d="M -160,0 L -80,25 L -100,0 L -80,-25 Z" fill="url(#compassGrad)" opacity="0.8"/>
+
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="12" fill="#ffffff"/>
+
+    <!-- Tick marks -->
+    <line x1="0" y1="-150" x2="0" y2="-140" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+    <line x1="0" y1="150" x2="0" y2="140" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+    <line x1="150" y1="0" x2="140" y2="0" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+    <line x1="-150" y1="0" x2="-140" y2="0" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+  </g>
+
+  <!-- Survival text (subtle) -->
+  <text x="256" y="420" font-family="Inter, sans-serif" font-size="32" font-weight="700"
+        fill="#ffffff" text-anchor="middle" opacity="0.8">SURVIVAL</text>
+</svg>
