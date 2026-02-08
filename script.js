@@ -17,6 +17,133 @@ async function loadScenarios() {
 }
 
 // ================================================================
+// AUDIO MANAGER
+// ================================================================
+const audioManager = {
+    sounds: {
+        pickup: new Audio('audio/ui/pickup.mp3'),
+        drop: new Audio('audio/ui/drop.mp3'),
+        click: new Audio('audio/ui/click.mp3'),
+        tick: new Audio('audio/ui/tick.mp3'),
+        success: new Audio('audio/ui/success.mp3'),
+        failure: new Audio('audio/ui/failure.mp3')
+    },
+    bgMusic: new Audio(),
+    volume: 0.3,
+    bgVolume: 0.15,
+    muted: false,
+    bgMusicPlaying: false,
+
+    init() {
+        // Load mute preference from localStorage
+        const savedMute = localStorage.getItem('audio-muted');
+        this.muted = savedMute === 'true';
+
+        const savedVolume = localStorage.getItem('audio-volume');
+        if (savedVolume) {
+            this.volume = parseFloat(savedVolume);
+        }
+
+        // Set initial volumes
+        Object.values(this.sounds).forEach(sound => {
+            sound.volume = this.volume;
+        });
+
+        // Update UI
+        this.updateUI();
+    },
+
+    play(soundName) {
+        if (!this.muted && this.sounds[soundName]) {
+            try {
+                this.sounds[soundName].currentTime = 0;
+                this.sounds[soundName].volume = this.volume;
+                this.sounds[soundName].play().catch(err => {
+                    // Silently handle autoplay restrictions
+                    console.log('Audio play prevented:', err);
+                });
+            } catch (err) {
+                console.log('Audio error:', err);
+            }
+        }
+    },
+
+    playBgMusic(scenarioId) {
+        if (this.muted) return;
+
+        try {
+            // Stop current music
+            this.stopBgMusic();
+
+            // Load new music
+            this.bgMusic.src = `audio/bg/${scenarioId}.mp3`;
+            this.bgMusic.loop = true;
+            this.bgMusic.volume = this.bgVolume;
+
+            this.bgMusic.play().catch(err => {
+                console.log('Background music play prevented:', err);
+            });
+
+            this.bgMusicPlaying = true;
+        } catch (err) {
+            console.log('Background music error:', err);
+        }
+    },
+
+    stopBgMusic() {
+        if (this.bgMusic) {
+            this.bgMusic.pause();
+            this.bgMusic.currentTime = 0;
+            this.bgMusicPlaying = false;
+        }
+    },
+
+    toggleMute() {
+        this.muted = !this.muted;
+        localStorage.setItem('audio-muted', this.muted.toString());
+
+        if (this.muted) {
+            this.stopBgMusic();
+        } else {
+            // Resume bg music if a scenario is loaded
+            if (currentScenario) {
+                this.playBgMusic(currentScenario.id || 'default');
+            }
+        }
+
+        this.updateUI();
+    },
+
+    setVolume(value) {
+        this.volume = parseFloat(value);
+        localStorage.setItem('audio-volume', this.volume.toString());
+
+        Object.values(this.sounds).forEach(sound => {
+            sound.volume = this.volume;
+        });
+
+        this.bgMusic.volume = this.volume * 0.5;
+    },
+
+    updateUI() {
+        const muteBtn = document.getElementById('audioToggle');
+        if (muteBtn) {
+            muteBtn.textContent = this.muted ? '🔇' : '🔊';
+            muteBtn.setAttribute('aria-label', this.muted ? 'Unmute audio' : 'Mute audio');
+        }
+    }
+};
+
+// Handle page visibility changes (pause audio when tab hidden)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        audioManager.stopBgMusic();
+    } else if (!audioManager.muted && currentScenario) {
+        audioManager.playBgMusic(currentScenario.id || 'default');
+    }
+});
+
+// ================================================================
 // THEME MANAGEMENT
 // ================================================================
 function initTheme() {
@@ -495,6 +622,9 @@ function handleDragStart(e) {
     if (navigator.vibrate) {
         navigator.vibrate(50);
     }
+
+    // Play pickup sound
+    audioManager.play('pickup');
 }
 
 function handleDragEnd(e) {
@@ -544,6 +674,9 @@ function handleDrop(e) {
         if (navigator.vibrate) {
             navigator.vibrate(30);
         }
+
+        // Play drop sound
+        audioManager.play('drop');
     }
     return false;
 }
@@ -749,6 +882,13 @@ function checkRankings() {
 
     // Announce score to screen readers
     announce(`Score calculated: ${totalScore} points. ${assessment}`);
+
+    // Play success or failure sound based on score
+    if (totalScore <= config.scoringThresholds.good) {
+        audioManager.play('success');
+    } else {
+        audioManager.play('failure');
+    }
 
     document.getElementById('results').classList.add('show');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
@@ -957,6 +1097,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme (dark/light mode)
     initTheme();
 
+    // Initialize audio manager
+    audioManager.init();
+
     // Initialize keyboard navigation
     initKeyboardNavigation();
 
@@ -983,8 +1126,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('scenarioSelect').addEventListener('change', (e) => {
         loadScenario(e.target.value);
     });
-    document.getElementById('checkBtn').addEventListener('click', checkRankings);
-    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    document.getElementById('checkBtn').addEventListener('click', () => {
+        audioManager.play('click');
+        checkRankings();
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        audioManager.play('click');
+        resetGame();
+    });
+
+    // Audio toggle button
+    document.getElementById('audioToggle').addEventListener('click', () => {
+        audioManager.toggleMute();
+        audioManager.play('click'); // Play click sound when unmuting
+    });
 
     // Add event listeners for initials modal
     document.getElementById('initialsInput').addEventListener('input', function() {
