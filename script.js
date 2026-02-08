@@ -1047,6 +1047,22 @@ function checkRankings() {
         resultsContainer.appendChild(timeCompletedDiv);
     }
 
+    // Share button
+    const shareButtonContainer = document.createElement('div');
+    shareButtonContainer.style.textAlign = 'center';
+    shareButtonContainer.style.margin = '25px 0';
+
+    const shareButton = document.createElement('button');
+    shareButton.className = 'btn';
+    shareButton.innerHTML = '🔗 Share Your Score';
+    shareButton.style.background = 'linear-gradient(45deg, #10B981, #059669)';
+    shareButton.setAttribute('aria-label', 'Share your score with friends');
+    shareButton.addEventListener('click', () => {
+        shareScore(currentScenario.id, totalScore, gameMode, assessment);
+    });
+    shareButtonContainer.appendChild(shareButton);
+    resultsContainer.appendChild(shareButtonContainer);
+
     // Announce score to screen readers
     announce(`Score calculated: ${totalScore} points. ${assessment}`);
 
@@ -1204,6 +1220,121 @@ function animateScoreCountUp(element, targetScore) {
 }
 
 // ================================================================
+// SOCIAL SHARING FUNCTIONS
+// ================================================================
+function generateShareUrl(scenarioId, score, difficulty) {
+    const baseUrl = window.location.origin + window.location.pathname;
+    const params = new URLSearchParams({
+        scenario: scenarioId,
+        challenge: score,
+        mode: difficulty
+    });
+    return `${baseUrl}?${params.toString()}`;
+}
+
+async function shareScore(scenarioId, score, difficulty, assessment) {
+    const scenarioName = currentScenario.config.expertSource;
+    const scoreText = `I scored ${score} points in ${scenarioName} Survival!`;
+    const challengeUrl = generateShareUrl(scenarioId, score, difficulty);
+
+    const shareData = {
+        title: 'Survival Decision Series',
+        text: `${scoreText} ${assessment} Can you beat my score?`,
+        url: challengeUrl
+    };
+
+    // Try native Web Share API (mobile)
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+            audioManager.play('success');
+            announce('Score shared successfully!');
+        } catch (err) {
+            // User cancelled or error occurred
+            if (err.name !== 'AbortError') {
+                console.log('Share error:', err);
+            }
+        }
+    } else {
+        // Fallback: Copy to clipboard (desktop)
+        try {
+            const shareText = `${shareData.text}\n${shareData.url}`;
+            await navigator.clipboard.writeText(shareText);
+
+            // Show toast notification
+            showShareToast('Link copied to clipboard!');
+            audioManager.play('success');
+            announce('Share link copied to clipboard!');
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            showShareToast('Failed to copy link. Please try again.');
+        }
+    }
+}
+
+function showShareToast(message) {
+    // Create toast notification
+    const toast = document.createElement('div');
+    toast.className = 'share-toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        font-weight: 600;
+        animation: toastSlideUp 0.3s ease-out;
+    `;
+
+    document.body.appendChild(toast);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'toastSlideDown 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Check for challenge URL on page load
+function checkChallengeUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const scenarioId = params.get('scenario');
+    const challengeScore = params.get('challenge');
+    const mode = params.get('mode');
+
+    if (scenarioId && challengeScore) {
+        // Show challenge banner
+        const challengeBanner = document.createElement('div');
+        challengeBanner.style.cssText = `
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 2px solid #FCD34D;
+        `;
+        challengeBanner.innerHTML = `
+            🏆 <strong>Challenge Received!</strong> Beat a score of ${challengeScore} in ${scenarioId.toUpperCase()} (${mode || 'any'} mode)
+        `;
+
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        if (welcomeScreen) {
+            welcomeScreen.insertBefore(challengeBanner, welcomeScreen.firstChild);
+        }
+
+        announce(`Challenge received: Beat a score of ${challengeScore} in ${scenarioId} survival`);
+    }
+}
+
+// ================================================================
 // HIGH SCORE SYSTEM FUNCTIONS
 // ================================================================
 function loadHighScores() {
@@ -1310,6 +1441,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize achievement system
     achievementManager.init();
+
+    // Check for challenge URL
+    checkChallengeUrl();
 
     // Initialize keyboard navigation
     initKeyboardNavigation();
