@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gladiator Manager - Build Your Stable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --primary-medium: #2a2a2a;
+            --primary-light: #4a4a4a;
+            --accent-primary: #D4AF37;
+            --accent-secondary: #8B4513;
+            --accent-tertiary: #8B0000;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-light: #e6e6e6;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --info-color: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html { font-size: 16px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-medium) 50%, var(--primary-light) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 10px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid var(--accent-primary);
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 90vh;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--accent-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--accent-primary);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .stat-value {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .footer {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 10px 20px;
+            border-top: 2px solid var(--accent-primary);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Buttons */
+        button {
+            background: var(--accent-primary);
+            color: var(--primary-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+        button:active { transform: scale(0.98); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: var(--primary-medium);
+            color: var(--text-primary);
+            border: 2px solid var(--accent-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-secondary);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        /* Roster/Fighter List */
+        .fighter-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--accent-secondary);
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .fighter-card:hover {
+            border-color: var(--accent-primary);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .fighter-card.selected {
+            border-color: var(--accent-primary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .fighter-name {
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .fighter-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-name {
+            color: var(--text-secondary);
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--primary-light);
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        /* Health Bar */
+        .health-bar {
+            display: flex;
+            gap: 4px;
+            margin: 8px 0;
+        }
+
+        .health-pip {
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 2px;
+        }
+
+        .health-pip.empty {
+            background: var(--danger-color);
+        }
+
+        /* Main Menu */
+        .main-menu {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .main-menu h2 {
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .main-menu p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.8;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Combat Screen */
+        .combat-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .fighter-detail {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--accent-secondary);
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .fighter-detail h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .health-display {
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .choice-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .choice-btn {
+            padding: 15px 10px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Match Results */
+        .match-results {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .result-winner {
+            color: var(--success-color);
+        }
+
+        .result-loser {
+            color: var(--danger-color);
+        }
+
+        /* Stats Display */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .status-item {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--accent-secondary);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .status-value {
+            font-size: 1.3rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .status-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* Training Screen */
+        .training-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .training-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--accent-secondary);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .training-stat {
+            color: var(--accent-primary);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .training-controls {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .training-controls button {
+            padding: 5px 10px;
+            font-size: 0.75rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 10px; text-align: center; }
+            .header-stats { justify-content: center; }
+            .combat-area { grid-template-columns: 1fr; }
+            .choice-buttons { grid-template-columns: 1fr; }
+            .training-grid { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ GLADIATOR MANAGER</h1>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Team</div>
+                    <div class="stat-value" id="headerTeam">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Level</div>
+                    <div class="stat-value" id="headerLevel">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Season</div>
+                    <div class="stat-value" id="headerSeason">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Gold</div>
+                    <div class="stat-value" id="headerGold">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Roster</div>
+                    <div class="stat-value" id="headerRoster">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- MAIN MENU -->
+            <div id="mainMenuScreen" class="screen active">
+                <div class="main-menu">
+                    <h2>⚔️ GLADIATOR MANAGER ⚔️</h2>
+                    <p>Build your stable of fighters. Train them. Lead them to glory. From humble countryside arenas to the legendary Colosseum, test your strategy and combat skills.</p>
+                    <div class="menu-buttons">
+                        <button onclick="GameUI.newGame()">New Game</button>
+                        <button class="btn-secondary" onclick="GameUI.showScreen('loadScreen')">Load Game</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME HUB -->
+            <div id="gameHubScreen" class="screen">
+                <h2>Team Hub</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">Team Name</div>
+                        <div class="status-value" id="hubTeamName">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Level</div>
+                        <div class="status-value" id="hubLevel">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Tier</div>
+                        <div class="status-value" id="hubTier">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Season</div>
+                        <div class="status-value" id="hubSeason">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Gold</div>
+                        <div class="status-value" id="hubGold">-</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Reputation</div>
+                        <div class="status-value" id="hubReputation">-</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">What would you like to do?</h3>
+                <div class="menu-buttons">
+                    <button onclick="GameUI.showScreen('rosterScreen')">Manage Roster</button>
+                    <button onclick="GameUI.showScreen('matchupScreen')">Next Match</button>
+                    <button onclick="GameUI.showScreen('trainingScreen')">Train Fighters</button>
+                    <button onclick="GameUI.showScreen('marketingScreen')">Promotion</button>
+                </div>
+            </div>
+
+            <!-- ROSTER SCREEN -->
+            <div id="rosterScreen" class="screen">
+                <h2>Your Stable</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Manage your team of fighters</p>
+                <div id="rosterList" class="grid"></div>
+                <div style="margin-top: 20px;">
+                    <button onclick="GameUI.showScreen('gameHubScreen')">Back to Hub</button>
+                </div>
+            </div>
+
+            <!-- MATCHUP SCREEN -->
+            <div id="matchupScreen" class="screen">
+                <h2>Next Match</h2>
+                <div id="matchInfo" class="card"></div>
+                <div style="margin-top: 20px;">
+                    <button onclick="GameUI.selectFighterForMatch()">Select Fighter</button>
+                    <button class="btn-secondary" onclick="GameUI.showScreen('gameHubScreen')">Back to Hub</button>
+                </div>
+            </div>
+
+            <!-- FIGHTER SELECTION -->
+            <div id="fighterSelectionScreen" class="screen">
+                <h2>Select Your Fighter</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Choose who will fight in this match</p>
+                <div id="fighterSelectionList" class="grid"></div>
+                <div style="margin-top: 20px;">
+                    <button id="confirmFighterBtn" onclick="GameUI.startCombat()" disabled>Start Combat</button>
+                    <button class="btn-secondary" onclick="GameUI.showScreen('matchupScreen')">Cancel</button>
+                </div>
+            </div>
+
+            <!-- COMBAT SCREEN -->
+            <div id="combatScreen" class="screen">
+                <h2>⚔️ COMBAT ⚔️</h2>
+                <div class="combat-area" id="combatArea"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="combatNextBtn" onclick="GameUI.nextCombatRound()" disabled>Next Round</button>
+                    <button class="btn-secondary" id="combatEndBtn" onclick="GameUI.endCombat()" style="display: none;">End Combat</button>
+                </div>
+            </div>
+
+            <!-- RESULTS SCREEN -->
+            <div id="resultsScreen" class="screen">
+                <div class="match-results" id="resultsContent"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="GameUI.showScreen('gameHubScreen')">Return to Hub</button>
+                </div>
+            </div>
+
+            <!-- TRAINING SCREEN -->
+            <div id="trainingScreen" class="screen">
+                <h2>Training Grounds</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Allocate training points to your fighters</p>
+                <div id="trainingFighterList" class="grid"></div>
+                <div style="margin-top: 20px;">
+                    <button onclick="GameUI.showScreen('gameHubScreen')">Back to Hub</button>
+                </div>
+            </div>
+
+            <!-- TRAINING DETAIL -->
+            <div id="trainingDetailScreen" class="screen">
+                <h2 id="trainingDetailTitle">Train Fighter</h2>
+                <div id="trainingDetailContent" class="card"></div>
+                <div style="margin-top: 20px;">
+                    <button onclick="GameUI.showScreen('trainingScreen')">Back</button>
+                </div>
+            </div>
+
+            <!-- MARKETING SCREEN -->
+            <div id="marketingScreen" class="screen">
+                <h2>Promotion & Hype</h2>
+                <div class="card">
+                    <h3 id="repTier">Unknown</h3>
+                    <p id="repDescription" style="color: var(--text-secondary); margin-bottom: 15px;"></p>
+                    <p id="repMessage" style="color: var(--accent-primary); font-style: italic; margin-bottom: 15px;"></p>
+                </div>
+
+                <h3 style="margin-top: 20px;">Marketing Opportunities</h3>
+                <div id="marketingOpportunitiesList" class="grid"></div>
+
+                <div style="margin-top: 20px;">
+                    <button onclick="GameUI.showScreen('gameHubScreen')">Back to Hub</button>
+                </div>
+            </div>
+
+            <!-- LOAD SCREEN -->
+            <div id="loadScreen" class="screen">
+                <h2>Load Game</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">Coming soon...</p>
+                <button onclick="GameUI.showScreen('mainMenuScreen')">Back</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            Gladiator Manager • v1.0 • Modular Game Engine
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // CORE ENGINE SYSTEMS (All embedded, single-file pattern)
+        // ============================================================================
+
+        // EVENT BUS
+        const EventBus = (() => {
+            const listeners = {};
+            return {
+                on: (event, callback, priority = 0) => {
+                    if (!listeners[event]) listeners[event] = [];
+                    listeners[event].push({ callback, priority });
+                    listeners[event].sort((a, b) => b.priority - a.priority);
+                },
+                off: (event, callback) => {
+                    if (listeners[event]) listeners[event] = listeners[event].filter(item => item.callback !== callback);
+                },
+                emit: (event, data = {}) => {
+                    if (listeners[event]) listeners[event].forEach(item => {
+                        try { item.callback(data); }
+                        catch (e) { console.error(`Error in ${event}:`, e); }
+                    });
+                }
+            };
+        })();
+
+        // EVENTS DEFINITIONS
+        const Events = {
+            GAME_START: "game:start", GAME_LOAD: "game:load", SEASON_START: "season:start",
+            SEASON_END: "season:end", MATCH_START: "match:start", MATCH_END: "match:end",
+            FIGHTER_ADDED: "fighter:added", FIGHTER_REMOVED: "fighter:removed",
+            FIGHTER_TRAINED: "fighter:trained", FIGHTER_INJURED: "fighter:injured",
+            FIGHTER_HEALED: "fighter:healed", COMBAT_RESOLVED: "combat:resolved",
+            FUNDS_CHANGED: "funds:changed", REPUTATION_CHANGED: "reputation:changed"
+        };
+
+        // STATE MANAGER
+        const StateManager = (() => {
+            let state = {
+                gameId: null, theme: null, ruleset: null,
+                currentLevel: 1, currentTier: 1, currentSeason: 1,
+                teamName: "New Stable", roster: [], retiredFighters: [], deadFighters: [],
+                funds: 5000, seasonStats: { matchesPlayed: 0, matchesWon: 0, seatsFilled: 0, totalSeatsAvailable: 0 },
+                reputation: 0, winStreak: 0, schedule: [],
+                currentScreen: "mainMenu", selectedFighter: null, selectedMatch: null
+            };
+
+            return {
+                getState: () => ({ ...state }),
+                getSlice: (key) => key.includes(".") ? state[key.split(".")[0]][key.split(".")[1]] : state[key],
+                setState: (updates) => { Object.assign(state, updates); return state; },
+                addFighter: (fighter) => {
+                    state.roster.push({
+                        id: `f_${Date.now()}_${Math.random()}`, name: fighter.name || "Fighter",
+                        status: "healthy", health: 5, maxHealth: 5,
+                        stats: { Strength: 1, Stamina: 1, Defense: 1, Sense: 1 },
+                        record: { wins: 0, losses: 0, draws: 0 }, experience: 0, trainingPoints: 0,
+                        ...fighter
+                    });
+                    return state.roster[state.roster.length - 1];
+                },
+                removeFighter: (id, reason) => {
+                    const f = state.roster.find(x => x.id === id);
+                    if (f) { state.roster = state.roster.filter(x => x.id !== id); }
+                    return f;
+                },
+                updateFighter: (id, updates) => {
+                    const f = state.roster.find(x => x.id === id);
+                    if (f) Object.assign(f, updates);
+                    return f;
+                },
+                getFighter: (id) => state.roster.find(x => x.id === id),
+                reset: () => {
+                    state = { gameId: null, theme: null, ruleset: null, currentLevel: 1, currentTier: 1, currentSeason: 1,
+                        teamName: "New Stable", roster: [], retiredFighters: [], deadFighters: [], funds: 5000,
+                        seasonStats: { matchesPlayed: 0, matchesWon: 0, seatsFilled: 0, totalSeatsAvailable: 0 },
+                        reputation: 0, winStreak: 0, schedule: [], currentScreen: "mainMenu", selectedFighter: null, selectedMatch: null
+                    };
+                }
+            };
+        })();
+
+        // CONFIG LOADER
+        const ConfigLoader = (() => {
+            let ruleset = {
+                version: "1.0.0",
+                levels: {
+                    level1: { name: "Countryside", tiers: 10, maxFighters: 10, minArenaSeatCapacity: 150, maxArenaSeatCapacity: 500, deathChance: 0.03, cripplingWoundChance: 0.05, advancementThreshold: 0.90 },
+                    level2: { name: "Traveling Circuit", tiers: 10, maxFighters: 10, minArenaSeatCapacity: 500, maxArenaSeatCapacity: 3000, deathChance: 0.05, cripplingWoundChance: 0.08, advancementThreshold: 0.90 },
+                    level3: { name: "Colosseum", tiers: 10, maxFighters: 3, minArenaSeatCapacity: 3000, maxArenaSeatCapacity: 5000, deathChance: 0.08, cripplingWoundChance: 0.10, advancementThreshold: 1.0 }
+                },
+                combat: { baseHealthPoints: 5 },
+                training: { stats: ["Strength", "Stamina", "Defense", "Sense"], pointsPerSeason: 10 },
+                economy: { startingFunds: 5000, hypeCost: 100 }
+            };
+            let theme = {
+                name: "Gladiator",
+                colors: { primaryDark: "#1a1a1a", accentPrimary: "#D4AF37" },
+                narrative: { teamName: "Stable", fighterName: "Gladiator" },
+                ui: {}
+            };
+
+            return {
+                getRuleset: () => ruleset,
+                getTheme: () => theme,
+                getConfig: (path) => {
+                    let v = ruleset;
+                    for (const part of path.split(".")) { v = v?.[part]; }
+                    return v;
+                }
+            };
+        })();
+
+        // COMBAT SYSTEM
+        const CombatSystem = (() => {
+            const CHOICES = { ATTACK: "attack", SHIELD: "shield", PARRY: "parry" };
+
+            const calculateDamage = (attacker, defender) => {
+                const str = attacker.stats.Strength || 1;
+                const def = Math.max(0.3, 1 - (defender.stats.Defense || 1) * 0.1);
+                return Math.max(1, Math.floor((5 + str * 0.5) * def));
+            };
+
+            const resolveRound = (attacker, defender, aChoice, dChoice) => {
+                const damage = calculateDamage(attacker, defender);
+                let damageDealt = 0;
+
+                if (aChoice === CHOICES.ATTACK && dChoice === CHOICES.PARRY) damageDealt = damage;
+                else if (aChoice === CHOICES.ATTACK && dChoice === CHOICES.SHIELD) damageDealt = Math.ceil(damage * 0.5);
+                else if (aChoice === CHOICES.SHIELD && dChoice === CHOICES.PARRY) damageDealt = Math.ceil(damage * 0.5);
+                else if (aChoice === CHOICES.SHIELD && dChoice === CHOICES.ATTACK) damageDealt = 0;
+                else if (aChoice === CHOICES.PARRY && dChoice === CHOICES.SHIELD) damageDealt = Math.ceil(damage * 0.5);
+                else if (aChoice === CHOICES.PARRY && dChoice === CHOICES.ATTACK) damageDealt = damage;
+
+                return { aChoice, dChoice, damageDealt };
+            };
+
+            const getAIChoice = () => {
+                const choices = [CHOICES.ATTACK, CHOICES.SHIELD, CHOICES.PARRY];
+                return choices[Math.floor(Math.random() * 3)];
+            };
+
+            return { CHOICES, resolveRound, getAIChoice, calculateDamage };
+        })();
+
+        // ROSTER SYSTEM
+        const RosterSystem = (() => {
+            const NAMES = ["Brutus", "Maximus", "Aurelius", "Castor", "Theron", "Lucius", "Quintus", "Spartacus"];
+
+            return {
+                hireFighter: (name) => {
+                    const state = StateManager.getState();
+                    const config = ConfigLoader.getConfig(`levels.level${state.currentLevel}`);
+                    if (state.roster.length >= config.maxFighters) return null;
+
+                    const fighter = {
+                        name: name || NAMES[Math.floor(Math.random() * NAMES.length)],
+                        status: "healthy", health: 5, maxHealth: 5,
+                        stats: { Strength: 1, Stamina: 1, Defense: 1, Sense: 1 },
+                        record: { wins: 0, losses: 0, draws: 0 }, experience: 0, trainingPoints: 0
+                    };
+                    return StateManager.addFighter(fighter);
+                },
+                updateFighterStatus: (id, result) => {
+                    const f = StateManager.getFighter(id);
+                    if (!f) return null;
+                    if (result.winner === id) { f.record.wins++; f.experience += 100; }
+                    else { f.record.losses++; f.experience += 50; }
+                    f.health = Math.max(0, f.health - result.damageToPlayer);
+                    StateManager.updateFighter(id, f);
+                    return f;
+                }
+            };
+        })();
+
+        // SCHEDULING SYSTEM
+        const SchedulingSystem = (() => {
+            const generateMatch = () => {
+                const state = StateManager.getState();
+                return {
+                    id: `match_${Date.now()}`, season: state.currentSeason,
+                    opponent: "Arena Fighters", arenaCapacity: Math.floor(Math.random() * 400) + 150,
+                    status: "scheduled", attendance: 0
+                };
+            };
+
+            return {
+                generateSeason: () => {
+                    const schedule = [];
+                    for (let i = 0; i < 10; i++) schedule.push(generateMatch());
+                    StateManager.setState({ schedule });
+                    return schedule;
+                },
+                getNextMatch: () => {
+                    const state = StateManager.getState();
+                    return state.schedule.find(m => m.status === "scheduled") || state.schedule[0];
+                },
+                completeMatch: (matchId, result) => {
+                    const state = StateManager.getState();
+                    const match = state.schedule.find(m => m.id === matchId);
+                    if (match) {
+                        match.status = "completed";
+                        match.result = result;
+                        match.attendance = Math.floor(match.arenaCapacity * (0.5 + state.reputation * 0.01));
+                        state.funds += match.attendance * 10;
+                        StateManager.setState({ schedule: state.schedule, funds: state.funds });
+                    }
+                    return match;
+                }
+            };
+        })();
+
+        // TRAINING SYSTEM
+        const TrainingSystem = (() => {
+            return {
+                trainStat: (id, stat, points = 1) => {
+                    const f = StateManager.getFighter(id);
+                    if (!f || f.trainingPoints < points) return null;
+                    f.stats[stat] = (f.stats[stat] || 0) + points;
+                    f.trainingPoints -= points;
+                    StateManager.updateFighter(id, f);
+                    return f;
+                }
+            };
+        })();
+
+        // MARKETING SYSTEM
+        const MarketingSystem = (() => {
+            return {
+                boostHype: () => {
+                    const state = StateManager.getState();
+                    const cost = 100;
+                    if (state.funds < cost) return null;
+                    state.funds -= cost;
+                    state.reputation = Math.min(state.reputation + 5, 100);
+                    StateManager.setState({ funds: state.funds, reputation: state.reputation });
+                    return { cost, reputation: state.reputation };
+                },
+                getReputationTier: () => {
+                    const rep = StateManager.getState().reputation;
+                    if (rep >= 80) return "Legendary";
+                    if (rep >= 60) return "Renowned";
+                    if (rep >= 40) return "Notable";
+                    if (rep >= 20) return "Emerging";
+                    return "Unknown";
+                }
+            };
+        })();
+
+        // ============================================================================
+        // UI CONTROLLER
+        // ============================================================================
+
+        const GameUI = (() => {
+            let currentMatch = null;
+            let selectedFighterId = null;
+            let combatRounds = [];
+            let combatInProgress = false;
+
+            const showScreen = (screenId) => {
+                document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+                const screen = document.getElementById(screenId);
+                if (screen) screen.classList.add("active");
+                updateHeader();
+            };
+
+            const updateHeader = () => {
+                const state = StateManager.getState();
+                document.getElementById("headerTeam").textContent = state.teamName;
+                document.getElementById("headerLevel").textContent = state.currentLevel;
+                document.getElementById("headerSeason").textContent = state.currentSeason;
+                document.getElementById("headerGold").textContent = state.funds;
+                document.getElementById("headerRoster").textContent = state.roster.length;
+            };
+
+            const newGame = async () => {
+                GameEngine.initialize();
+                GameEngine.newGame("My Stable");
+                SchedulingSystem.generateSeason();
+
+                // Create initial roster
+                for (let i = 0; i < 5; i++) {
+                    RosterSystem.hireFighter();
+                }
+
+                showScreen("gameHubScreen");
+                updateHub();
+            };
+
+            const updateHub = () => {
+                const state = StateManager.getState();
+                document.getElementById("hubTeamName").textContent = state.teamName;
+                document.getElementById("hubLevel").textContent = state.currentLevel;
+                document.getElementById("hubTier").textContent = state.currentTier;
+                document.getElementById("hubSeason").textContent = state.currentSeason;
+                document.getElementById("hubGold").textContent = state.funds;
+                document.getElementById("hubReputation").textContent = MarketingSystem.getReputationTier();
+            };
+
+            const showRoster = () => {
+                const state = StateManager.getState();
+                const html = state.roster.map(f => `
+                    <div class="fighter-card" onclick="GameUI.viewFighter('${f.id}')">
+                        <div class="fighter-name">${f.name}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">W: ${f.record.wins} L: ${f.record.losses}</div>
+                        <div class="health-bar">
+                            ${Array(f.maxHealth).fill(0).map((_, i) => `<div class="health-pip ${i >= f.health ? 'empty' : ''}"></div>`).join('')}
+                        </div>
+                        <div class="fighter-stats">
+                            ${['Strength', 'Stamina', 'Defense', 'Sense'].map(s => `
+                                <div>
+                                    <div class="stat-name">${s}</div>
+                                    <div class="stat-bar"><div class="stat-fill" style="width: ${(f.stats[s] / 10) * 100}%"></div></div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById("rosterList").innerHTML = html;
+            };
+
+            const selectFighterForMatch = () => {
+                const state = StateManager.getState();
+                const healthyFighters = state.roster.filter(f => f.status === 'healthy');
+
+                if (healthyFighters.length === 0) {
+                    alert("No healthy fighters available!");
+                    return;
+                }
+
+                const html = healthyFighters.map(f => `
+                    <div class="fighter-card" onclick="GameUI.selectFighter('${f.id}')">
+                        <div class="fighter-name">${f.name}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem;">W: ${f.record.wins} | Exp: ${f.experience}</div>
+                        <div class="fighter-stats">
+                            ${['Strength', 'Stamina', 'Defense', 'Sense'].map(s => `
+                                <div><span style="color: var(--text-secondary);">${s}:</span> ${f.stats[s]}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById("fighterSelectionList").innerHTML = html;
+                showScreen("fighterSelectionScreen");
+            };
+
+            const selectFighter = (id) => {
+                selectedFighterId = id;
+                document.querySelectorAll("#fighterSelectionList .fighter-card").forEach(el => el.classList.remove("selected"));
+                event.currentTarget.classList.add("selected");
+                document.getElementById("confirmFighterBtn").disabled = false;
+            };
+
+            const startCombat = () => {
+                if (!selectedFighterId) return;
+
+                const state = StateManager.getState();
+                const player = StateManager.getFighter(selectedFighterId);
+                const opponent = {
+                    id: "opponent_" + Date.now(),
+                    name: "Arena Champion",
+                    health: 5,
+                    maxHealth: 5,
+                    stats: { Strength: Math.floor(Math.random() * 3) + 1, Stamina: 1, Defense: 1, Sense: 1 }
+                };
+
+                currentMatch = { player, opponent, rounds: [] };
+                combatRounds = [];
+                combatInProgress = true;
+
+                showCombatUI();
+                showScreen("combatScreen");
+            };
+
+            const showCombatUI = () => {
+                const html = `
+                    <div class="fighter-detail">
+                        <h3>Your Fighter</h3>
+                        <div style="color: var(--accent-primary); font-weight: 600;">${currentMatch.player.name}</div>
+                        <div class="health-display">
+                            Health: <span id="playerHealth">${currentMatch.player.health}</span>/${currentMatch.player.maxHealth}
+                        </div>
+                        <div class="fighter-stats">
+                            ${Object.entries(currentMatch.player.stats).map(([k, v]) => `
+                                <div><span style="color: var(--text-secondary);">${k}:</span> ${v}</div>
+                            `).join('')}
+                        </div>
+                        <div class="choice-buttons" id="playerChoices">
+                            <button class="choice-btn" onclick="GameUI.makeChoice('attack')">⚔️ ATTACK</button>
+                            <button class="choice-btn" onclick="GameUI.makeChoice('shield')">🛡️ SHIELD</button>
+                            <button class="choice-btn" onclick="GameUI.makeChoice('parry')">↔️ PARRY</button>
+                        </div>
+                    </div>
+
+                    <div class="fighter-detail">
+                        <h3>Opponent</h3>
+                        <div style="color: var(--accent-primary); font-weight: 600;">${currentMatch.opponent.name}</div>
+                        <div class="health-display">
+                            Health: <span id="opponentHealth">${currentMatch.opponent.health}</span>/${currentMatch.opponent.maxHealth}
+                        </div>
+                        <div class="fighter-stats">
+                            ${Object.entries(currentMatch.opponent.stats).map(([k, v]) => `
+                                <div><span style="color: var(--text-secondary);">${k}:</span> ${v}</div>
+                            `).join('')}
+                        </div>
+                        <div id="opponentChoice" style="text-align: center; margin-top: 30px; font-size: 2rem; color: var(--accent-primary);">⏳</div>
+                    </div>
+                `;
+                document.getElementById("combatArea").innerHTML = html;
+            };
+
+            const makeChoice = (choice) => {
+                if (!combatInProgress || !currentMatch) return;
+
+                const oppChoice = CombatSystem.getAIChoice();
+                const round = CombatSystem.resolveRound(currentMatch.player, currentMatch.opponent, choice, oppChoice);
+
+                // Apply damage to opponent
+                currentMatch.opponent.health = Math.max(0, currentMatch.opponent.health - round.damageDealt);
+
+                // Opponent counterattack
+                const counterRound = CombatSystem.resolveRound(currentMatch.opponent, currentMatch.player, oppChoice, choice);
+                currentMatch.player.health = Math.max(0, currentMatch.player.health - counterRound.damageDealt);
+
+                combatRounds.push({ choice, oppChoice, playerDamage: round.damageDealt, oppDamage: counterRound.damageDealt });
+
+                // Update UI
+                document.getElementById("playerHealth").textContent = currentMatch.player.health;
+                document.getElementById("opponentHealth").textContent = currentMatch.opponent.health;
+                document.getElementById("opponentChoice").textContent = oppChoice === 'attack' ? '⚔️' : oppChoice === 'shield' ? '🛡️' : '↔️';
+
+                document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
+
+                // Check for end
+                if (currentMatch.player.health <= 0 || currentMatch.opponent.health <= 0) {
+                    combatInProgress = false;
+                    setTimeout(() => {
+                        endCombat();
+                    }, 1000);
+                } else {
+                    document.getElementById("combatNextBtn").disabled = false;
+                }
+            };
+
+            const nextCombatRound = () => {
+                document.querySelectorAll(".choice-btn").forEach(b => b.disabled = false);
+                document.getElementById("combatNextBtn").disabled = true;
+            };
+
+            const endCombat = () => {
+                const state = StateManager.getState();
+                const player = currentMatch.player;
+                const opponent = currentMatch.opponent;
+
+                const result = {
+                    winner: player.health > 0 ? player.id : opponent.id,
+                    loser: player.health > 0 ? opponent.id : player.id,
+                    damageToPlayer: combatRounds.reduce((s, r) => s + r.oppDamage, 0),
+                    damageToOpponent: combatRounds.reduce((s, r) => s + r.playerDamage, 0),
+                    rounds: combatRounds
+                };
+
+                // Update fighter record
+                RosterSystem.updateFighterStatus(selectedFighterId, result);
+
+                // Complete match
+                const match = SchedulingSystem.getNextMatch();
+                if (match) {
+                    SchedulingSystem.completeMatch(match.id, result);
+                }
+
+                // Update reputation
+                if (result.winner === player.id) {
+                    state.reputation = Math.min(state.reputation + 10, 100);
+                    state.winStreak++;
+                } else {
+                    state.winStreak = 0;
+                }
+                StateManager.setState({ reputation: state.reputation, winStreak: state.winStreak });
+
+                showResults(result);
+            };
+
+            const showResults = (result) => {
+                const state = StateManager.getState();
+                const player = StateManager.getFighter(selectedFighterId);
+                const isWin = result.winner === selectedFighterId;
+
+                const html = `
+                    <div class="result-title ${isWin ? 'result-winner' : 'result-loser'}">
+                        ${isWin ? '🏆 VICTORY! 🏆' : '⚔️ DEFEAT ⚔️'}
+                    </div>
+                    <p style="color: var(--text-secondary); margin: 20px 0;">
+                        ${isWin ? `${player.name} has proven their prowess!` : `${player.name} fell in combat.`}
+                    </p>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">Fighter</div>
+                            <div class="status-value">${player.name}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Damage Dealt</div>
+                            <div class="status-value">${result.damageToOpponent}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Damage Taken</div>
+                            <div class="status-value">${result.damageToPlayer}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Experience</div>
+                            <div class="status-value">+${isWin ? 100 : 50}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Record</div>
+                            <div class="status-value">W: ${player.record.wins} L: ${player.record.losses}</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Gold</div>
+                            <div class="status-value">+${isWin ? 500 : 100}</div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById("resultsContent").innerHTML = html;
+                showScreen("resultsScreen");
+            };
+
+            const showMatchupScreen = () => {
+                const match = SchedulingSystem.getNextMatch();
+                if (!match) {
+                    alert("Season complete!");
+                    return;
+                }
+
+                const html = `
+                    <h3>Next Match</h3>
+                    <div style="color: var(--text-secondary); margin: 15px 0;">
+                        <p><strong>Opponent:</strong> ${match.opponent}</p>
+                        <p><strong>Arena Capacity:</strong> ${match.arenaCapacity} spectators</p>
+                    </div>
+                `;
+                document.getElementById("matchInfo").innerHTML = html;
+                currentMatch = match;
+            };
+
+            const showTrainingScreen = () => {
+                const state = StateManager.getState();
+                const html = state.roster.map(f => `
+                    <div class="training-card" onclick="GameUI.openTrainingDetail('${f.id}')">
+                        <div class="fighter-name">${f.name}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 10px;">
+                            Training Points: ${f.trainingPoints}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            Str: ${f.stats.Strength} | Sta: ${f.stats.Stamina} | Def: ${f.stats.Defense} | Sen: ${f.stats.Sense}
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById("trainingFighterList").innerHTML = html;
+            };
+
+            const openTrainingDetail = (id) => {
+                const f = StateManager.getFighter(id);
+                if (!f) return;
+
+                document.getElementById("trainingDetailTitle").textContent = `Train ${f.name}`;
+
+                const html = `
+                    <div style="margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary);">Training Points Available: <strong>${f.trainingPoints}</strong></p>
+                    </div>
+                    <div class="training-grid">
+                        ${['Strength', 'Stamina', 'Defense', 'Sense'].map(s => `
+                            <div class="training-card">
+                                <div class="training-stat">${s}</div>
+                                <div style="color: var(--text-secondary); margin-bottom: 10px;">Level ${f.stats[s]}/10</div>
+                                <div class="training-controls">
+                                    <button onclick="GameUI.trainFighter('${id}', '${s}', -1)" ${f.trainingPoints === 0 ? 'disabled' : ''}>-</button>
+                                    <button onclick="GameUI.trainFighter('${id}', '${s}', 1)" ${f.trainingPoints === 0 ? 'disabled' : ''}>+</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                document.getElementById("trainingDetailContent").innerHTML = html;
+                showScreen("trainingDetailScreen");
+            };
+
+            const trainFighter = (id, stat, delta) => {
+                const f = StateManager.getFighter(id);
+                if (!f || f.trainingPoints === 0) return;
+
+                if (delta > 0) {
+                    TrainingSystem.trainStat(id, stat, 1);
+                }
+                // For simplicity, only support +1 training in this version
+                openTrainingDetail(id);
+            };
+
+            const showMarketingScreen = () => {
+                const state = StateManager.getState();
+                const tier = MarketingSystem.getReputationTier();
+
+                let tierDesc = "Few have heard of your stable";
+                if (tier === "Legendary") tierDesc = "Your name strikes fear and inspires awe";
+                else if (tier === "Renowned") tierDesc = "Your stable is respected throughout the realm";
+                else if (tier === "Notable") tierDesc = "People know of your team's exploits";
+                else if (tier === "Emerging") tierDesc = "Your stable is gaining attention";
+
+                document.getElementById("repTier").textContent = `Reputation: ${tier} (${state.reputation}/100)`;
+                document.getElementById("repDescription").textContent = tierDesc;
+                document.getElementById("repMessage").textContent = "Invest in promotion to boost attendance at matches!";
+
+                const html = `
+                    <div class="card" onclick="GameUI.boostHype()">
+                        <h3>Basic Promotion</h3>
+                        <p style="color: var(--text-secondary);">Cost: 100 Gold</p>
+                        <p style="color: var(--accent-primary); margin-top: 10px;">+15% attendance for next match</p>
+                        <p style="text-align: center; margin-top: 10px;">
+                            <button>Boost Hype</button>
+                        </p>
+                    </div>
+                `;
+                document.getElementById("marketingOpportunitiesList").innerHTML = html;
+            };
+
+            const boostHype = () => {
+                const result = MarketingSystem.boostHype();
+                if (result) {
+                    alert(`Hype boosted! Reputation: ${result.reputation}/100`);
+                    updateHeader();
+                    showMarketingScreen();
+                } else {
+                    alert("Insufficient funds!");
+                }
+            };
+
+            const viewFighter = (id) => {
+                // Simple fighter view - can be expanded
+                const f = StateManager.getFighter(id);
+                if (f) {
+                    alert(`${f.name}\nW: ${f.record.wins} L: ${f.record.losses}\nExperience: ${f.experience}`);
+                }
+            };
+
+            // Hook up main screens
+            EventBus.on(Events.MATCH_START, showMatchupScreen);
+
+            return {
+                showScreen, updateHeader, newGame, updateHub,
+                selectFighterForMatch, selectFighter, startCombat, makeChoice, nextCombatRound, endCombat,
+                showRoster, viewFighter, openTrainingDetail, trainFighter,
+                showMarketingScreen, boostHype
+            };
+        })();
+
+        // GAME ENGINE
+        const GameEngine = (() => {
+            return {
+                initialize: () => {
+                    const ruleset = ConfigLoader.getRuleset();
+                    StateManager.setState({
+                        gameId: `game_${Date.now()}`,
+                        theme: "Gladiator",
+                        ruleset: ruleset.version
+                    });
+                    EventBus.emit(Events.GAME_START);
+                },
+                newGame: (teamName) => {
+                    StateManager.reset();
+                    StateManager.setState({ teamName, funds: 5000 });
+                    EventBus.emit(Events.GAME_START, { isNewGame: true });
+                }
+            };
+        })();
+
+        // INITIALIZATION
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("✓ Gladiator Manager loaded");
+            GameUI.showScreen("mainMenuScreen");
+        });
+    </script>
+</body>
+</html>
